@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance - CampusConnect</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Campus<span>Connect</span></div>
+
+    <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="requests.html">My Requests</a>
+        <button onclick="logoutUser()" class="btn btn-danger">Logout</button>
+    </div>
+</nav>
+
+<main class="container">
+
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">STUDENT ACADEMIC</p>
+            <h1>📊 Attendance</h1>
+            <p>Check your attendance and calculate your percentage.</p>
+        </div>
+    </section>
+
+    <!-- OVERALL ATTENDANCE -->
+    <section class="card">
+
+        <div class="section-title">
+            <div>
+                <h2>Overall Attendance</h2>
+                <p class="muted">Current academic semester</p>
+            </div>
+
+            <div class="stat-number">82%</div>
+        </div>
+
+        <div class="progress">
+            <div class="progress-bar" style="width:82%;"></div>
+        </div>
+
+        <p class="muted">
+            41 classes attended out of 50 classes
+        </p>
+
+    </section>
+
+    <!-- CALCULATOR -->
+    <section class="grid-2">
+
+        <div class="card">
+
+            <h2>🧮 Attendance Calculator</h2>
+            <p class="muted">
+                Enter your class details to calculate attendance.
+            </p>
+
+            <form onsubmit="calculateAttendance(event)">
+
+                <label>Total Classes</label>
+                <input
+                    type="number"
+                    id="totalClasses"
+                    min="1"
+                    placeholder="Example: 50"
+                    required
+                >
+
+                <label>Attended Classes</label>
+                <input
+                    type="number"
+                    id="attendedClasses"
+                    min="0"
+                    placeholder="Example: 42"
+                    required
+                >
+
+                <label>Required Attendance %</label>
+                <input
+                    type="number"
+                    id="requiredPercentage"
+                    min="0"
+                    max="100"
+                    value="75"
+                    required
+                >
+
+                <button type="submit" class="btn btn-primary">
+                    Calculate
+                </button>
+
+            </form>
+
+            <div id="attendanceResult" class="info-box" style="display:none;">
+            </div>
+
+        </div>
+
+        <!-- ATTENDANCE INFO -->
+        <div class="card">
+
+            <h2>📌 Attendance Information</h2>
+
+            <div class="info-box">
+                <strong>Current Attendance</strong>
+                <p>82% attendance recorded.</p>
+            </div>
+
+            <div class="info-box">
+                <strong>Minimum Requirement</strong>
+                <p>Minimum required attendance is 75%.</p>
+            </div>
+
+            <div class="info-box">
+                <strong>Attendance Status</strong>
+                <p>Currently above the minimum requirement.</p>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- SUBJECT TABLE -->
+    <section class="card">
+
+        <h2>📚 Subject-wise Attendance</h2>
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Subject</th>
+                        <th>Total Classes</th>
+                        <th>Attended</th>
+                        <th>Attendance</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>Computer Science</td>
+                        <td>12</td>
+                        <td>11</td>
+                        <td>92%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Mathematics</td>
+                        <td>10</td>
+                        <td>8</td>
+                        <td>80%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Database Management</td>
+                        <td>10</td>
+                        <td>8</td>
+                        <td>80%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Web Development</td>
+                        <td>9</td>
+                        <td>7</td>
+                        <td>78%</td>
+                    </tr>
+
+                    <tr>
+                        <td>Communication Skills</td>
+                        <td>9</td>
+                        <td>7</td>
+                        <td>78%</td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <div class="quick-links">
+        <a href="dashboard.html" class="btn btn-secondary">← Dashboard</a>
+        <a href="timetable.html" class="btn btn-primary">View Timetable →</a>
+    </div>
+
+</main>
+
+<footer class="footer">
+    <p>CampusConnect • One Platform • All Campus Services</p>
+</footer>
+
+<script src="app.js"></script>
+
+<script>
+function calculateAttendance(event) {
+
+    event.preventDefault();
+
+    const total = Number(document.getElementById("totalClasses").value);
+    const attended = Number(document.getElementById("attendedClasses").value);
+    const required = Number(document.getElementById("requiredPercentage").value);
+
+    const result = document.getElementById("attendanceResult");
+
+    if (attended > total) {
+        alert("Attended classes cannot be greater than total classes.");
+        return;
+    }
+
+    const percentage = (attended / total) * 100;
+
+    result.style.display = "block";
+
+    if (percentage >= required) {
+
+        result.innerHTML =
+            "<strong>Attendance: " +
+            percentage.toFixed(2) +
+            "%</strong><p>Your attendance meets the required percentage.</p>";
+
+    } else {
+
+        const requiredClasses =
+            Math.ceil((required * total - 100 * attended) / (100 - required));
+
+        result.innerHTML =
+            "<strong>Attendance: " +
+            percentage.toFixed(2) +
+            "%</strong>" +
+            "<p>Your attendance is below the required percentage.</p>" +
+            "<p>You need to attend approximately " +
+            Math.max(0, requiredClasses) +
+            " more class(es) consecutively to reach " +
+            required +
+            "%.</p>";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Leave Application - CampusConnect</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+.process-list{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+    margin-top:20px;
+}
+
+.process-item{
+    padding:16px;
+    background:#f8fafc;
+    border-radius:12px;
+}
+
+.process-item strong{
+    display:block;
+    margin-bottom:6px;
+}
+
+.process-item p{
+    margin:0;
+    color:#667085;
+    line-height:1.5;
+}
+
+.quick-links{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:15px;
+}
+
+@media(max-width:700px){
+    .grid-2{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        Campus<span>Connect</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="services.html">
+            Services
+        </a>
+
+        <a href="requests.html">
+            My Requests
+        </a>
+
+        <button
+            class="btn btn-danger"
+            onclick="logoutUser()">
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<main class="container page">
+
+<section class="page-header">
+
+    <div>
+
+        <p class="eyebrow">
+            STUDENT SERVICES
+        </p>
+
+        <h1>
+            Leave Application
+        </h1>
+
+        <p>
+            Apply for leave and track your application status.
+        </p>
+
+    </div>
+
+    <a
+        href="services.html"
+        class="btn btn-secondary">
+        ← Services
+    </a>
+
+</section>
+
+
+<section class="grid-2">
+
+<!-- LEAVE FORM -->
+
+<div class="card">
+
+    <p class="eyebrow">
+        APPLY FOR LEAVE
+    </p>
+
+    <h2>
+        Leave Details
+    </h2>
+
+    <form id="leaveForm">
+
+        <div class="form-group">
+
+            <label>
+                Leave Type
+            </label>
+
+            <select id="leaveType" required>
+
+                <option value="">
+                    Select Leave Type
+                </option>
+
+                <option value="Personal">
+                    Personal
+                </option>
+
+                <option value="Medical">
+                    Medical
+                </option>
+
+                <option value="Family Emergency">
+                    Family Emergency
+                </option>
+
+                <option value="Other">
+                    Other
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Number of Days
+            </label>
+
+            <input
+                type="number"
+                id="days"
+                min="1"
+                placeholder="Example: 2"
+                required
+            >
+
+        </div>
+
+
+        <div class="grid-2">
+
+            <div class="form-group">
+
+                <label>
+                    From Date
+                </label>
+
+                <input
+                    type="date"
+                    id="fromDate"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    To Date
+                </label>
+
+                <input
+                    type="date"
+                    id="toDate"
+                    required
+                >
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>
+                Reason
+            </label>
+
+            <textarea
+                id="reason"
+                rows="6"
+                placeholder="Enter your reason for leave..."
+                required
+            ></textarea>
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="btn btn-primary">
+
+            📝 Submit Leave Application
+
+        </button>
+
+    </form>
+
+</div>
+
+
+<!-- INFORMATION -->
+
+<div>
+
+<div class="card">
+
+    <p class="eyebrow">
+        LEAVE PROCESS
+    </p>
+
+    <h2>
+        How It Works
+    </h2>
+
+    <div class="process-list">
+
+        <div class="process-item">
+
+            <strong>
+                1. Apply
+            </strong>
+
+            <p>
+                Fill in your leave details and submit.
+            </p>
+
+        </div>
+
+
+        <div class="process-item">
+
+            <strong>
+                2. Review
+            </strong>
+
+            <p>
+                Administrator reviews your application.
+            </p>
+
+        </div>
+
+
+        <div class="process-item">
+
+            <strong>
+                3. Decision
+            </strong>
+
+            <p>
+                Application will be approved or rejected.
+            </p>
+
+        </div>
+
+
+        <div class="process-item">
+
+            <strong>
+                4. Track
+            </strong>
+
+            <p>
+                Check status from My Requests.
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card">
+
+    <p class="eyebrow">
+        QUICK LINKS
+    </p>
+
+    <div class="quick-links">
+
+        <a
+            href="requests.html"
+            class="btn btn-secondary">
+            📋 My Requests
+        </a>
+
+        <a
+            href="dashboard.html"
+            class="btn btn-secondary">
+            🏠 Dashboard
+        </a>
+
+    </div>
+
+</div>
+
+</div>
+
+</section>
+
+</main>
+
+
+<footer class="footer">
+
+<p>
+© 2026 CampusConnect • One Platform • All Campus Services
+</p>
+
+</footer>
+
+
+<!-- FIREBASE -->
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    collection,
+    addDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+let firebaseUser = null;
+
+
+/* ==========================================
+   LOGOUT
+========================================== */
+
+window.logoutUser = async function(){
+
+    try{
+
+        await signOut(auth);
+
+        localStorage.removeItem("currentUser");
+
+        window.location.href = "index.html";
+
+    }catch(error){
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+        window.location.href = "index.html";
+
+    }
+
+};
+
+
+/* ==========================================
+   AUTH CHECK
+========================================== */
+
+onAuthStateChanged(
+    auth,
+    async (user)=>{
+
+        if(!user){
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+        firebaseUser = user;
+
+    }
+);
+
+
+/* ==========================================
+   SUBMIT LEAVE
+========================================== */
+
+document
+.getElementById("leaveForm")
+.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+
+        if(!firebaseUser){
+
+            alert(
+                "Please login first."
+            );
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        /* FORM DATA */
+
+        const leaveType =
+            document
+            .getElementById("leaveType")
+            .value;
+
+
+        const days =
+            Number(
+                document
+                .getElementById("days")
+                .value
+            );
+
+
+        const fromDate =
+            document
+            .getElementById("fromDate")
+            .value;
+
+
+        const toDate =
+            document
+            .getElementById("toDate")
+            .value;
+
+
+        const reason =
+            document
+            .getElementById("reason")
+            .value
+            .trim();
+
+
+        /* DATE CHECK */
+
+        if(
+            new Date(toDate)
+            <
+            new Date(fromDate)
+        ){
+
+            alert(
+                "To Date cannot be before From Date."
+            );
+
+            return;
+
+        }
+
+
+        /* DAYS CHECK */
+
+        if(days <= 0){
+
+            alert(
+                "Number of days must be greater than 0."
+            );
+
+            return;
+
+        }
+
+
+        try{
+
+            /* ==================================
+               SAVE TO FIRESTORE
+            ================================== */
+
+            const requestData = {
+
+                type:
+                    "Leave Application",
+
+                title:
+                    leaveType +
+                    " Leave - " +
+                    days +
+                    " Day(s)",
+
+                category:
+                    leaveType,
+
+                date:
+                    fromDate +
+                    " → " +
+                    toDate,
+
+                description:
+                    "Leave Type: " +
+                    leaveType +
+                    " | Days: " +
+                    days +
+                    " | From: " +
+                    fromDate +
+                    " | To: " +
+                    toDate +
+                    " | Reason: " +
+                    reason,
+
+                reason:
+                    reason,
+
+                days:
+                    days,
+
+                fromDate:
+                    fromDate,
+
+                toDate:
+                    toDate,
+
+                studentUid:
+                    firebaseUser.uid,
+
+                studentEmail:
+                    firebaseUser.email || "",
+
+                studentName:
+                    firebaseUser.displayName ||
+                    "Student",
+
+                status:
+                    "Pending",
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            const requestRef =
+                await addDoc(
+                    collection(
+                        db,
+                        "requests"
+                    ),
+                    requestData
+                );
+
+
+            console.log(
+                "Leave request created:",
+                requestRef.id
+            );
+
+
+            /* SUCCESS */
+
+            alert(
+                "Leave Application Submitted Successfully!\n\n" +
+                "Application ID: " +
+                requestRef.id
+            );
+
+
+            /* OPEN REQUESTS */
+
+            window.location.href =
+                "requests.html";
+
+
+        }catch(error){
+
+            console.error(
+                "Leave submit error:",
+                error
+            );
+
+
+            alert(
+                "Leave application submit nahi hua.\n\n" +
+                error.message
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>

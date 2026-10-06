@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Campus Services - CampusConnect</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<nav class="navbar">
+
+    <div class="logo">
+        Campus<span>Connect</span>
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">
+            Dashboard
+        </a>
+
+        <a href="services.html">
+            Services
+        </a>
+
+        <a href="requests.html">
+            My Requests
+        </a>
+
+        <button
+            onclick="logoutUser()"
+            class="btn btn-danger">
+
+            Logout
+
+        </button>
+
+    </div>
+
+</nav>
+
+
+
+<!-- MAIN -->
+
+<main class="container page">
+
+
+    <div class="page-header">
+
+        <div>
+
+            <p class="eyebrow">
+                CAMPUS SERVICES
+            </p>
+
+            <h1>
+                All Campus Services
+            </h1>
+
+            <p>
+                Access important campus services
+                from one place.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- SERVICES GRID -->
+
+    <section class="service-grid">
+
+
+        <!-- LEAVE -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                📝
+            </div>
+
+            <h2>
+                Leave Application
+            </h2>
+
+            <p>
+                Apply for personal, medical
+                or emergency leave.
+            </p>
+
+            <a
+                href="leave.html"
+                class="btn btn-primary">
+
+                Apply Leave
+
+            </a>
+
+        </div>
+
+
+
+        <!-- GATE PASS -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🚪
+            </div>
+
+            <h2>
+                Gate Pass
+            </h2>
+
+            <p>
+                Request permission to leave
+                the campus.
+            </p>
+
+            <a
+                href="gatepass.html"
+                class="btn btn-primary">
+
+                Request Gate Pass
+
+            </a>
+
+        </div>
+
+
+
+        <!-- CERTIFICATE -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                📜
+            </div>
+
+            <h2>
+                Certificate Request
+            </h2>
+
+            <p>
+                Request Bonafide, Character,
+                Study and other certificates.
+            </p>
+
+            <a
+                href="certificate.html"
+                class="btn btn-primary">
+
+                Request Certificate
+
+            </a>
+
+        </div>
+
+
+
+        <!-- HOSTEL COMPLAINT -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🏠
+            </div>
+
+            <h2>
+                Hostel Complaint
+            </h2>
+
+            <p>
+                Report room, water, electrical,
+                internet or other hostel issues.
+            </p>
+
+            <a
+                href="complaint.html"
+                class="btn btn-primary">
+
+                Report Complaint
+
+            </a>
+
+        </div>
+
+
+
+        <!-- MESS -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                🍽️
+            </div>
+
+            <h2>
+                Mess Service
+            </h2>
+
+            <p>
+                Submit food complaints,
+                suggestions and meal requests.
+            </p>
+
+            <a
+                href="mess.html"
+                class="btn btn-primary">
+
+                Open Mess Service
+
+            </a>
+
+        </div>
+
+
+
+        <!-- OTHER -->
+
+        <div class="service-card">
+
+            <div class="service-icon">
+                💬
+            </div>
+
+            <h2>
+                Other Request
+            </h2>
+
+            <p>
+                Submit any other campus-related
+                request or support issue.
+            </p>
+
+            <a
+                href="other.html"
+                class="btn btn-primary">
+
+                Submit Request
+
+            </a>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- TRACK REQUEST -->
+
+    <section class="card track-card">
+
+        <div>
+
+            <p class="eyebrow">
+                REQUEST TRACKING
+            </p>
+
+            <h2>
+                Track Your Requests
+            </h2>
+
+            <p>
+                Check whether your application
+                has been approved, rejected or
+                is still pending.
+            </p>
+
+        </div>
+
+
+        <a
+            href="requests.html"
+            class="btn btn-primary">
+
+            View My Requests →
+
+        </a>
+
+    </section>
+
+
+</main>
+
+
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+    <p>
+        © 2026 CampusConnect •
+        One Platform •
+        All Campus Services
+    </p>
+
+</footer>
+
+
+
+<script src="app.js"></script>
+
+
+
+<style>
+
+/* SERVICE GRID */
+
+.service-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 24px;
+
+    margin-top: 25px;
+
+}
+
+
+/* SERVICE CARD */
+
+.service-card {
+
+    background: white;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 18px;
+
+    padding: 28px;
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.05);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+
+}
+
+
+.service-card:hover {
+
+    transform:
+        translateY(-5px);
+
+    box-shadow:
+        0 14px 35px
+        rgba(0, 0, 0, 0.09);
+
+}
+
+
+.service-icon {
+
+    width: 58px;
+
+    height: 58px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 15px;
+
+    background: #eff6ff;
+
+    font-size: 30px;
+
+    margin-bottom: 18px;
+
+}
+
+
+.service-card h2 {
+
+    font-size: 21px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.service-card p {
+
+    color: #667085;
+
+    line-height: 1.6;
+
+    min-height: 70px;
+
+    margin-bottom: 20px;
+
+}
+
+
+/* TRACK CARD */
+
+.track-card {
+
+    margin-top: 30px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+}
+
+
+.track-card p {
+
+    color: #667085;
+
+    line-height: 1.6;
+
+}
+
+
+/* TABLET */
+
+@media (max-width: 900px) {
+
+    .service-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .service-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .track-card {
+
+        flex-direction: column;
+
+        align-items: flex-start;
+
+    }
+
+}
+
+</style>
+
+
+</body>
+
+</html>

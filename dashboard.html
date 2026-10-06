@@ -1,0 +1,3626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - CampusConnect</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#222;
+}
+
+.navbar{
+    background:#2563eb;
+    color:white;
+    padding:16px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:bold;
+}
+
+.nav-right{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+
+.admin-name{
+    font-size:14px;
+}
+
+.logout-btn{
+    border:none;
+    background:white;
+    color:#2563eb;
+    padding:9px 16px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.container{
+    width:95%;
+    max-width:1250px;
+    margin:25px auto;
+}
+
+.page-header,
+.section{
+    background:white;
+    padding:25px;
+    border-radius:15px;
+    margin-bottom:20px;
+    box-shadow:0 3px 15px rgba(0,0,0,.07);
+}
+
+.page-header h1,
+.section h2{
+    color:#1e3a8a;
+}
+
+.page-header p{
+    color:#666;
+    margin-top:8px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat-card{
+    background:white;
+    padding:20px;
+    border-radius:14px;
+    box-shadow:0 3px 15px rgba(0,0,0,.07);
+}
+
+.stat-card h3{
+    color:#666;
+    font-size:14px;
+    margin-bottom:10px;
+}
+
+.number{
+    font-size:30px;
+    font-weight:bold;
+    color:#2563eb;
+}
+
+.section h2{
+    margin-bottom:18px;
+}
+
+.notice-form,
+.timetable-form{
+    display:grid;
+    gap:15px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group label{
+    font-weight:bold;
+    color:#374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:8px;
+    font-size:14px;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{
+    border-color:#2563eb;
+}
+
+.form-group textarea{
+    min-height:120px;
+    resize:vertical;
+}
+
+.publish-btn,
+.fee-save-btn,
+.timetable-save-btn{
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.publish-btn{
+    background:#2563eb;
+}
+
+.fee-save-btn{
+    background:#16a34a;
+}
+
+.timetable-save-btn{
+    background:#7c3aed;
+}
+
+.publish-btn:hover{
+    background:#1d4ed8;
+}
+
+.fee-save-btn:hover{
+    background:#15803d;
+}
+
+.timetable-save-btn:hover{
+    background:#6d28d9;
+}
+
+.fee-form{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.fee-form .full{
+    grid-column:1/-1;
+}
+
+.fee-total{
+    background:#eff6ff;
+    padding:15px;
+    border-radius:10px;
+    font-size:18px;
+    font-weight:bold;
+    color:#1e3a8a;
+}
+
+.fee-info{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:18px;
+}
+
+.fee-info strong{
+    color:#1e3a8a;
+}
+
+.table-wrapper{
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:900px;
+}
+
+th,td{
+    padding:13px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
+    vertical-align:middle;
+}
+
+th{
+    background:#eff6ff;
+    color:#1e3a8a;
+}
+
+tr:hover{
+    background:#f8fafc;
+}
+
+.attendance-input{
+    width:70px;
+    padding:8px;
+    border:1px solid #cbd5e1;
+    border-radius:7px;
+}
+
+.save-btn,
+.calculate-btn,
+.approve-btn,
+.reject-btn,
+.verify-btn,
+.delete-btn{
+    border:none;
+    color:white;
+    padding:8px 13px;
+    border-radius:7px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.save-btn,
+.approve-btn,
+.verify-btn{
+    background:#16a34a;
+}
+
+.calculate-btn{
+    background:#2563eb;
+    margin-right:5px;
+}
+
+.reject-btn,
+.delete-btn{
+    background:#dc2626;
+}
+
+.status{
+    display:inline-block;
+    padding:6px 11px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.approved,
+.verified{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.rejected{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.request-actions,
+.payment-actions{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+}
+
+.message{
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:15px;
+    display:none;
+}
+
+.success{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.loading{
+    text-align:center;
+    padding:25px;
+    color:#666;
+}
+
+.small-text{
+    color:#666;
+    font-size:12px;
+}
+
+.day-badge{
+    display:inline-block;
+    background:#ede9fe;
+    color:#6d28d9;
+    padding:5px 9px;
+    border-radius:15px;
+    font-weight:bold;
+    font-size:12px;
+}
+
+footer{
+    text-align:center;
+    padding:25px;
+    color:#777;
+}
+
+@media(max-width:1100px){
+    .stats{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+
+@media(max-width:900px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .fee-form{
+        grid-template-columns:1fr;
+    }
+
+    .fee-form .full{
+        grid-column:auto;
+    }
+}
+
+@media(max-width:600px){
+    .navbar{
+        padding:13px 15px;
+    }
+
+    .logo{
+        font-size:18px;
+    }
+
+    .admin-name{
+        display:none;
+    }
+
+    .container{
+        width:94%;
+        margin:15px auto;
+    }
+
+    .stats{
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+    }
+
+    .section{
+        padding:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🎓 CampusConnect
+    </div>
+
+    <div class="nav-right">
+
+        <span class="admin-name">
+            👨‍💼 Administrator
+        </span>
+
+        <button class="logout-btn" onclick="logout()">
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+<div class="page-header">
+
+    <h1>Admin Dashboard</h1>
+
+    <p>
+        Manage students, attendance, fees, notices,
+        payments, requests and timetable.
+    </p>
+
+</div>
+
+
+<div id="message" class="message"></div>
+
+
+<!-- ================= STATS ================= -->
+
+<div class="stats">
+
+    <div class="stat-card">
+        <h3>Registered Students</h3>
+        <div class="number" id="studentCount">0</div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Attendance Records</h3>
+        <div class="number" id="attendanceCount">0</div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Pending Requests</h3>
+        <div class="number" id="pendingCount">0</div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Total Requests</h3>
+        <div class="number" id="requestCount">0</div>
+    </div>
+
+    <div class="stat-card">
+        <h3>Pending Payments</h3>
+        <div class="number" id="pendingPaymentCount">0</div>
+    </div>
+
+</div>
+
+
+<!-- ================= NOTICE ================= -->
+
+<div class="section">
+
+<h2>📢 Notice Management</h2>
+
+<div class="notice-form">
+
+<div class="form-group">
+<label>Notice Title</label>
+<input type="text" id="noticeTitle"
+placeholder="Enter notice title">
+</div>
+
+<div class="form-group">
+<label>Category</label>
+
+<select id="noticeCategory">
+
+<option>Academic</option>
+<option>Events</option>
+<option>Hostel</option>
+<option>Fees</option>
+<option>General</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>Notice Description</label>
+
+<textarea id="noticeDescription"
+placeholder="Write the complete notice here..."></textarea>
+
+</div>
+
+<button class="publish-btn" id="publishNoticeBtn">
+📢 Publish Notice
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ================= FEES ================= -->
+
+<div class="section">
+
+<h2>💳 Student Fees Management</h2>
+
+<div class="fee-info">
+
+<strong>How it works:</strong><br>
+
+Select a student, enter/update fee details and click
+<strong>Save Fee Details</strong>.
+
+</div>
+
+<div class="fee-form">
+
+<div class="form-group">
+
+<label>Select Student</label>
+
+<select id="feeStudent">
+
+<option value="">
+Loading students...
+</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Fee Status</label>
+
+<select id="feeStatus">
+
+<option value="Pending">Pending</option>
+<option value="Paid">Paid</option>
+<option value="Overdue">Overdue</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+<label>Tuition Fee</label>
+<input type="number" id="tuitionFee" min="0" value="0">
+</div>
+
+<div class="form-group">
+<label>Hostel Fee</label>
+<input type="number" id="hostelFee" min="0" value="0">
+</div>
+
+<div class="form-group">
+<label>Exam Fee</label>
+<input type="number" id="examFee" min="0" value="0">
+</div>
+
+<div class="form-group">
+<label>Transport Fee</label>
+<input type="number" id="transportFee" min="0" value="0">
+</div>
+
+<div class="form-group">
+<label>Other Fee</label>
+<input type="number" id="otherFee" min="0" value="0">
+</div>
+
+<div class="form-group">
+<label>Paid Amount</label>
+<input type="number" id="paidAmount" min="0" value="0">
+</div>
+
+<div class="form-group">
+<label>Due Date</label>
+<input type="date" id="dueDate">
+</div>
+
+<div class="form-group">
+<label>Remarks</label>
+<input type="text" id="feeRemarks"
+placeholder="Enter fee remarks">
+</div>
+
+
+<div class="fee-total full">
+
+Total Fee:
+₹<span id="totalFee">0</span>
+
+&nbsp;&nbsp; | &nbsp;&nbsp;
+
+Pending:
+₹<span id="pendingFee">0</span>
+
+</div>
+
+
+<button class="fee-save-btn full" id="saveFeeBtn">
+💾 Save Fee Details
+</button>
+
+</div>
+
+</div>
+
+
+<!-- ================= TIMETABLE ================= -->
+
+<div class="section">
+
+<h2>🗓️ Timetable Management</h2>
+
+<div class="fee-info">
+
+<strong>Admin timetable:</strong><br>
+
+Add class details here. The data will be saved directly
+to Firebase Firestore and later displayed on the student's
+Timetable page.
+
+</div>
+
+
+<div class="fee-form">
+
+<div class="form-group">
+
+<label>Day</label>
+
+<select id="ttDay">
+
+<option value="">Select Day</option>
+<option>Monday</option>
+<option>Tuesday</option>
+<option>Wednesday</option>
+<option>Thursday</option>
+<option>Friday</option>
+<option>Saturday</option>
+
+</select>
+
+</div>
+
+
+<div class="form-group">
+
+<label>Time</label>
+
+<input type="time" id="ttTime">
+
+</div>
+
+
+<div class="form-group">
+
+<label>Subject</label>
+
+<input type="text"
+id="ttSubject"
+placeholder="e.g. Computer Science">
+
+</div>
+
+
+<div class="form-group">
+
+<label>Room</label>
+
+<input type="text"
+id="ttRoom"
+placeholder="e.g. Room 101">
+
+</div>
+
+
+<div class="form-group">
+
+<label>Teacher</label>
+
+<input type="text"
+id="ttTeacher"
+placeholder="e.g. Dr. Sharma">
+
+</div>
+
+
+<button
+class="timetable-save-btn full"
+id="addTimetableBtn">
+
+➕ Add Class
+
+</button>
+
+</div>
+
+
+<br>
+
+
+<h3>📋 Current Timetable</h3>
+
+<br>
+
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>Day</th>
+<th>Time</th>
+<th>Subject</th>
+<th>Room</th>
+<th>Teacher</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="timetableAdminTable">
+
+<tr>
+
+<td colspan="7" class="loading">
+Loading timetable...
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- ================= PAYMENTS ================= -->
+
+<div class="section">
+
+<h2>💰 Payment Verification</h2>
+
+<div class="fee-info">
+
+<strong>Payment verification:</strong><br>
+
+Student submits payment → Firebase Pending →
+Admin Verify/Reject → Firebase status updates →
+Verified payment appears in student's Payment History.
+
+</div>
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>Student</th>
+<th>Amount</th>
+<th>Method</th>
+<th>Transaction ID</th>
+<th>Payment Date</th>
+<th>Submitted</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="paymentsTable">
+
+<tr>
+<td colspan="9" class="loading">
+Loading payments...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- ================= STUDENTS ================= -->
+
+<div class="section">
+
+<h2>👨‍🎓 Registered Students</h2>
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>Name</th>
+<th>Email</th>
+<th>Student ID</th>
+<th>Department</th>
+<th>Semester</th>
+
+</tr>
+
+</thead>
+
+<tbody id="studentsTable">
+
+<tr>
+<td colspan="6" class="loading">
+Loading students...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- ================= ATTENDANCE ================= -->
+
+<div class="section">
+
+<h2>📊 Attendance Management</h2>
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>Student</th>
+<th>Email</th>
+<th>Present</th>
+<th>Total</th>
+<th>Percentage</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="attendanceTable">
+
+<tr>
+<td colspan="7" class="loading">
+Loading attendance...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- ================= REQUESTS ================= -->
+
+<div class="section">
+
+<h2>📩 Student Requests</h2>
+
+<div class="table-wrapper">
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>#</th>
+<th>Student</th>
+<th>Type</th>
+<th>Details</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody id="requestsTable">
+
+<tr>
+<td colspan="6" class="loading">
+Loading requests...
+</td>
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+
+<footer>
+
+© 2026 CampusConnect | Admin Panel
+
+</footer>
+
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    collection,
+    collectionGroup,
+    getDocs,
+    getDoc,
+    doc,
+    setDoc,
+    addDoc,
+    updateDoc,
+    deleteDoc,
+    onSnapshot,
+    runTransaction
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+let students = [];
+let attendanceRecords = {};
+let requests = [];
+let payments = [];
+let timetableData = [];
+
+let unsubscribeRequests = null;
+let unsubscribePayments = null;
+let unsubscribeTimetable = null;
+
+
+/* ================= COMMON ================= */
+
+function escapeHTML(value){
+
+    if(value === null || value === undefined){
+        return "";
+    }
+
+    return String(value)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function formatMoney(value){
+
+    return Number(value || 0)
+    .toLocaleString("en-IN");
+
+}
+
+
+function formatDate(value){
+
+    if(!value){
+        return "-";
+    }
+
+    try{
+
+        if(value.toDate){
+            return value.toDate()
+            .toLocaleDateString("en-IN");
+        }
+
+        return new Date(value)
+        .toLocaleDateString("en-IN");
+
+    }catch(error){
+
+        return "-";
+
+    }
+
+}
+
+
+function showMessage(message,type="success"){
+
+    const box =
+        document.getElementById("message");
+
+    box.textContent = message;
+
+    box.className =
+        "message " + type;
+
+    box.style.display = "block";
+
+    setTimeout(()=>{
+
+        box.style.display = "none";
+
+    },4000);
+
+}
+
+
+/* ================= ADMIN CHECK ================= */
+
+function checkAdmin(){
+
+    const saved =
+        localStorage.getItem("currentUser");
+
+    if(!saved){
+
+        window.location.href = "admin.html";
+
+        return false;
+
+    }
+
+    try{
+
+        const currentUser =
+            JSON.parse(saved);
+
+        if(currentUser.role !== "admin"){
+
+            window.location.href = "admin.html";
+
+            return false;
+
+        }
+
+    }catch(error){
+
+        localStorage.removeItem("currentUser");
+
+        window.location.href = "admin.html";
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+
+/* ================= STUDENTS ================= */
+
+async function getStudents(){
+
+    try{
+
+        const snapshot =
+            await getDocs(
+                collection(db,"users")
+            );
+
+        students = [];
+
+        snapshot.forEach(docSnap=>{
+
+            const data =
+                docSnap.data();
+
+            if(data.role === "student"){
+
+                students.push({
+
+                    uid:docSnap.id,
+
+                    name:data.name || "Student",
+
+                    email:data.email || "",
+
+                    studentId:data.studentId || "",
+
+                    department:data.department || "",
+
+                    semester:data.semester || ""
+
+                });
+
+            }
+
+        });
+
+
+        students.sort(
+            (a,b)=>
+            a.name.localeCompare(b.name)
+        );
+
+
+        document.getElementById(
+            "studentCount"
+        ).textContent =
+            students.length;
+
+
+        displayStudents();
+
+        loadFeeStudentList();
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Students load nahi ho paaye: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+function displayStudents(){
+
+    const table =
+        document.getElementById(
+            "studentsTable"
+        );
+
+
+    if(students.length === 0){
+
+        table.innerHTML = `
+        <tr>
+        <td colspan="6" style="text-align:center;">
+        No registered students found.
+        </td>
+        </tr>
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+    students.map((student,index)=>`
+
+    <tr>
+
+    <td>${index+1}</td>
+
+    <td>
+    <strong>${escapeHTML(student.name)}</strong>
+    </td>
+
+    <td>${escapeHTML(student.email)}</td>
+
+    <td>${escapeHTML(student.studentId)}</td>
+
+    <td>${escapeHTML(student.department)}</td>
+
+    <td>${escapeHTML(student.semester)}</td>
+
+    </tr>
+
+    `).join("");
+
+}
+
+
+function loadFeeStudentList(){
+
+    const select =
+        document.getElementById("feeStudent");
+
+
+    if(students.length === 0){
+
+        select.innerHTML = `
+        <option value="">
+        No students found
+        </option>
+        `;
+
+        return;
+
+    }
+
+
+    select.innerHTML = `
+    <option value="">
+    -- Select Student --
+    </option>
+    `;
+
+
+    students.forEach(student=>{
+
+        const option =
+            document.createElement("option");
+
+        option.value =
+            student.uid;
+
+        option.textContent =
+            `${student.name} - ${
+                student.studentId ||
+                student.email
+            }`;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* ================= FEES ================= */
+
+function clearFeeForm(clearStudent=true){
+
+    if(clearStudent){
+
+        document.getElementById(
+            "feeStudent"
+        ).value = "";
+
+    }
+
+    document.getElementById("tuitionFee").value = 0;
+    document.getElementById("hostelFee").value = 0;
+    document.getElementById("examFee").value = 0;
+    document.getElementById("transportFee").value = 0;
+    document.getElementById("otherFee").value = 0;
+    document.getElementById("paidAmount").value = 0;
+    document.getElementById("dueDate").value = "";
+    document.getElementById("feeStatus").value = "Pending";
+    document.getElementById("feeRemarks").value = "";
+
+    calculateFeeTotal();
+
+}
+
+
+document.getElementById("feeStudent")
+.addEventListener("change",async function(){
+
+    const uid = this.value;
+
+    if(!uid){
+
+        clearFeeForm();
+
+        return;
+
+    }
+
+    try{
+
+        const feeSnap =
+            await getDoc(
+                doc(db,"fees",uid)
+            );
+
+
+        if(feeSnap.exists()){
+
+            const data =
+                feeSnap.data();
+
+            document.getElementById("tuitionFee").value =
+                Number(data.tuitionFee || 0);
+
+            document.getElementById("hostelFee").value =
+                Number(data.hostelFee || 0);
+
+            document.getElementById("examFee").value =
+                Number(data.examFee || 0);
+
+            document.getElementById("transportFee").value =
+                Number(data.transportFee || 0);
+
+            document.getElementById("otherFee").value =
+                Number(data.otherFee || 0);
+
+            document.getElementById("paidAmount").value =
+                Number(data.paidAmount || 0);
+
+            document.getElementById("dueDate").value =
+                data.dueDate || "";
+
+            document.getElementById("feeStatus").value =
+                data.status || "Pending";
+
+            document.getElementById("feeRemarks").value =
+                data.remarks || "";
+
+            calculateFeeTotal();
+
+        }else{
+
+            clearFeeForm(false);
+
+        }
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Fee load nahi hua: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+});
+
+
+function calculateFeeTotal(){
+
+    const ids = [
+        "tuitionFee",
+        "hostelFee",
+        "examFee",
+        "transportFee",
+        "otherFee"
+    ];
+
+    let total = 0;
+
+    ids.forEach(id=>{
+
+        total +=
+            Number(
+                document.getElementById(id).value
+            ) || 0;
+
+    });
+
+
+    const paid =
+        Number(
+            document.getElementById("paidAmount").value
+        ) || 0;
+
+
+    const pending =
+        Math.max(total-paid,0);
+
+
+    document.getElementById("totalFee")
+    .textContent =
+        formatMoney(total);
+
+    document.getElementById("pendingFee")
+    .textContent =
+        formatMoney(pending);
+
+}
+
+
+[
+    "tuitionFee",
+    "hostelFee",
+    "examFee",
+    "transportFee",
+    "otherFee",
+    "paidAmount"
+].forEach(id=>{
+
+    document.getElementById(id)
+    .addEventListener(
+        "input",
+        calculateFeeTotal
+    );
+
+});
+
+
+document.getElementById("saveFeeBtn")
+.addEventListener("click",async function(){
+
+    const uid =
+        document.getElementById("feeStudent").value;
+
+
+    if(!uid){
+
+        alert("Pehle student select karo.");
+
+        return;
+
+    }
+
+
+    const student =
+        students.find(
+            item=>item.uid === uid
+        );
+
+
+    if(!student){
+
+        alert("Student nahi mila.");
+
+        return;
+
+    }
+
+
+    const tuitionFee =
+        Number(document.getElementById("tuitionFee").value)||0;
+
+    const hostelFee =
+        Number(document.getElementById("hostelFee").value)||0;
+
+    const examFee =
+        Number(document.getElementById("examFee").value)||0;
+
+    const transportFee =
+        Number(document.getElementById("transportFee").value)||0;
+
+    const otherFee =
+        Number(document.getElementById("otherFee").value)||0;
+
+    const paidAmount =
+        Number(document.getElementById("paidAmount").value)||0;
+
+    const dueDate =
+        document.getElementById("dueDate").value;
+
+    const status =
+        document.getElementById("feeStatus").value;
+
+    const remarks =
+        document.getElementById("feeRemarks").value.trim();
+
+
+    const totalFee =
+        tuitionFee+
+        hostelFee+
+        examFee+
+        transportFee+
+        otherFee;
+
+
+    if(paidAmount > totalFee){
+
+        alert(
+            "Paid amount total fee se zyada nahi ho sakta."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById("saveFeeBtn");
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+
+    try{
+
+        await setDoc(
+
+            doc(db,"fees",uid),
+
+            {
+
+                studentUid:uid,
+                studentName:student.name,
+                studentEmail:student.email,
+
+                tuitionFee,
+                hostelFee,
+                examFee,
+                transportFee,
+                otherFee,
+
+                totalFee,
+                paidAmount,
+
+                dueDate,
+                status,
+                remarks,
+
+                updatedAt:
+                    new Date().toISOString(),
+
+                updatedBy:
+                    "Administrator"
+
+            },
+
+            {merge:true}
+
+        );
+
+
+        try{
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "users",
+                    uid,
+                    "notifications"
+                ),
+
+                {
+
+                    title:
+                        "💳 Fee Details Updated",
+
+                    message:
+                        `Total fee ₹${formatMoney(totalFee)}, Paid ₹${formatMoney(paidAmount)}, Pending ₹${formatMoney(Math.max(totalFee-paidAmount,0))}.`,
+
+                    read:false,
+                    type:"fees",
+
+                    createdAt:
+                        new Date().toISOString()
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+
+        showMessage(
+            "💳 Fee details saved successfully!",
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Fee save nahi hua: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+
+    button.disabled = false;
+    button.textContent =
+        "💾 Save Fee Details";
+
+});
+
+
+/* ================= NOTICE ================= */
+
+document.getElementById("publishNoticeBtn")
+.addEventListener("click",async function(){
+
+    const title =
+        document.getElementById("noticeTitle")
+        .value.trim();
+
+    const category =
+        document.getElementById("noticeCategory")
+        .value;
+
+    const description =
+        document.getElementById("noticeDescription")
+        .value.trim();
+
+
+    if(!title){
+
+        alert("Notice title enter karo.");
+
+        return;
+
+    }
+
+
+    if(!description){
+
+        alert("Notice description enter karo.");
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "publishNoticeBtn"
+        );
+
+    button.disabled = true;
+    button.textContent = "Publishing...";
+
+
+    try{
+
+        await addDoc(
+
+            collection(db,"notices"),
+
+            {
+
+                title,
+                category,
+                description,
+
+                createdAt:
+                    new Date().toISOString(),
+
+                createdBy:
+                    "Administrator"
+
+            }
+
+        );
+
+
+        document.getElementById(
+            "noticeTitle"
+        ).value = "";
+
+        document.getElementById(
+            "noticeDescription"
+        ).value = "";
+
+
+        showMessage(
+            "📢 Notice published successfully!",
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Notice publish failed: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+
+    button.disabled = false;
+    button.textContent =
+        "📢 Publish Notice";
+
+});
+
+
+/* ================= TIMETABLE ================= */
+
+document.getElementById("addTimetableBtn")
+.addEventListener("click",async function(){
+
+    const day =
+        document.getElementById("ttDay").value;
+
+    const time =
+        document.getElementById("ttTime").value;
+
+    const subject =
+        document.getElementById("ttSubject")
+        .value.trim();
+
+    const room =
+        document.getElementById("ttRoom")
+        .value.trim();
+
+    const teacher =
+        document.getElementById("ttTeacher")
+        .value.trim();
+
+
+    if(!day){
+
+        alert("Day select karo.");
+        return;
+
+    }
+
+    if(!time){
+
+        alert("Class time select karo.");
+        return;
+
+    }
+
+    if(!subject){
+
+        alert("Subject enter karo.");
+        return;
+
+    }
+
+    if(!room){
+
+        alert("Room enter karo.");
+        return;
+
+    }
+
+    if(!teacher){
+
+        alert("Teacher enter karo.");
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            "addTimetableBtn"
+        );
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+
+    try{
+
+        await addDoc(
+
+            collection(db,"timetable"),
+
+            {
+
+                day,
+                time,
+                subject,
+                room,
+                teacher,
+
+                createdAt:
+                    new Date().toISOString(),
+
+                createdBy:
+                    "Administrator"
+
+            }
+
+        );
+
+
+        document.getElementById("ttDay").value = "";
+        document.getElementById("ttTime").value = "";
+        document.getElementById("ttSubject").value = "";
+        document.getElementById("ttRoom").value = "";
+        document.getElementById("ttTeacher").value = "";
+
+
+        showMessage(
+            "🗓️ Class added successfully to Firebase!",
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Timetable save failed: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+
+    button.disabled = false;
+    button.textContent = "➕ Add Class";
+
+});
+
+
+function loadTimetable(){
+
+    const table =
+        document.getElementById(
+            "timetableAdminTable"
+        );
+
+
+    if(unsubscribeTimetable){
+
+        unsubscribeTimetable();
+
+    }
+
+
+    unsubscribeTimetable =
+        onSnapshot(
+
+            collection(db,"timetable"),
+
+            snapshot=>{
+
+                timetableData = [];
+
+                snapshot.forEach(docSnap=>{
+
+                    timetableData.push({
+
+                        id:docSnap.id,
+                        ...docSnap.data()
+
+                    });
+
+                });
+
+
+                const dayOrder = {
+                    Monday:1,
+                    Tuesday:2,
+                    Wednesday:3,
+                    Thursday:4,
+                    Friday:5,
+                    Saturday:6
+                };
+
+
+                timetableData.sort((a,b)=>{
+
+                    const dayA =
+                        dayOrder[a.day] || 99;
+
+                    const dayB =
+                        dayOrder[b.day] || 99;
+
+                    if(dayA !== dayB){
+
+                        return dayA-dayB;
+
+                    }
+
+                    return String(a.time || "")
+                    .localeCompare(
+                        String(b.time || "")
+                    );
+
+                });
+
+
+                displayTimetable();
+
+            },
+
+            error=>{
+
+                console.error(error);
+
+                showMessage(
+                    "Timetable load error: "+
+                    error.message,
+                    "error"
+                );
+
+            }
+
+        );
+
+}
+
+
+function displayTimetable(){
+
+    const table =
+        document.getElementById(
+            "timetableAdminTable"
+        );
+
+
+    if(timetableData.length === 0){
+
+        table.innerHTML = `
+
+        <tr>
+
+        <td colspan="7"
+        style="text-align:center;padding:30px;">
+
+        No timetable classes added yet.
+
+        </td>
+
+        </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+
+    timetableData.map((item,index)=>`
+
+    <tr>
+
+    <td>${index+1}</td>
+
+    <td>
+    <span class="day-badge">
+    ${escapeHTML(item.day)}
+    </span>
+    </td>
+
+    <td>
+    ${escapeHTML(item.time)}
+    </td>
+
+    <td>
+    <strong>
+    ${escapeHTML(item.subject)}
+    </strong>
+    </td>
+
+    <td>
+    ${escapeHTML(item.room)}
+    </td>
+
+    <td>
+    ${escapeHTML(item.teacher)}
+    </td>
+
+    <td>
+
+    <button
+    class="delete-btn"
+    onclick="deleteTimetable('${item.id}')">
+
+    🗑️ Delete
+
+    </button>
+
+    </td>
+
+    </tr>
+
+    `).join("");
+
+}
+
+
+window.deleteTimetable =
+async function(id){
+
+    const confirmDelete =
+        confirm(
+            "Kya tum is class ko delete karna chahte ho?"
+        );
+
+
+    if(!confirmDelete){
+
+        return;
+
+    }
+
+
+    try{
+
+        await deleteDoc(
+            doc(db,"timetable",id)
+        );
+
+
+        showMessage(
+            "🗑️ Timetable class deleted.",
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Timetable delete failed: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+/* ================= ATTENDANCE ================= */
+
+async function loadAttendance(){
+
+    const table =
+        document.getElementById(
+            "attendanceTable"
+        );
+
+
+    if(students.length === 0){
+
+        table.innerHTML = `
+        <tr>
+        <td colspan="7"
+        style="text-align:center;">
+        No students available.
+        </td>
+        </tr>
+        `;
+
+        return;
+
+    }
+
+
+    attendanceRecords = {};
+
+    let count = 0;
+
+
+    for(const student of students){
+
+        try{
+
+            const snap =
+                await getDoc(
+                    doc(
+                        db,
+                        "attendance",
+                        student.uid
+                    )
+                );
+
+
+            if(snap.exists()){
+
+                attendanceRecords[
+                    student.uid
+                ] = snap.data();
+
+                count++;
+
+            }else{
+
+                attendanceRecords[
+                    student.uid
+                ] = {
+                    present:0,
+                    total:0,
+                    percentage:0
+                };
+
+            }
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    document.getElementById(
+        "attendanceCount"
+    ).textContent = count;
+
+
+    displayAttendance();
+
+}
+
+
+function displayAttendance(){
+
+    const table =
+        document.getElementById(
+            "attendanceTable"
+        );
+
+
+    table.innerHTML =
+
+    students.map((student,index)=>{
+
+        const data =
+            attendanceRecords[
+                student.uid
+            ] || {};
+
+
+        const present =
+            Number(data.present || 0);
+
+        const total =
+            Number(data.total || 0);
+
+
+        const percentage =
+            total > 0
+            ? ((present/total)*100).toFixed(2)
+            : "0.00";
+
+
+        return `
+
+        <tr>
+
+        <td>${index+1}</td>
+
+        <td>
+        <strong>
+        ${escapeHTML(student.name)}
+        </strong>
+        </td>
+
+        <td>
+        ${escapeHTML(student.email)}
+        </td>
+
+        <td>
+
+        <input
+        type="number"
+        min="0"
+        class="attendance-input"
+        id="present-${index}"
+        value="${present}">
+
+        </td>
+
+        <td>
+
+        <input
+        type="number"
+        min="0"
+        class="attendance-input"
+        id="total-${index}"
+        value="${total}">
+
+        </td>
+
+        <td>
+
+        <span
+        class="percentage"
+        id="percentage-${index}">
+
+        ${percentage}%
+
+        </span>
+
+        </td>
+
+        <td>
+
+        <button
+        class="calculate-btn"
+        onclick="calculateAttendance(${index})">
+
+        Calculate
+
+        </button>
+
+        <button
+        class="save-btn"
+        onclick="saveAttendance(${index})">
+
+        Save
+
+        </button>
+
+        </td>
+
+        </tr>
+
+        `;
+
+    }).join("");
+
+}
+
+
+window.calculateAttendance =
+function(index){
+
+    const present =
+        Number(
+            document.getElementById(
+                `present-${index}`
+            ).value
+        );
+
+    const total =
+        Number(
+            document.getElementById(
+                `total-${index}`
+            ).value
+        );
+
+
+    if(total <= 0){
+
+        alert(
+            "Total classes 0 se greater hona chahiye."
+        );
+
+        return;
+
+    }
+
+
+    if(present < 0 || present > total){
+
+        alert(
+            "Present classes total se zyada nahi ho sakti."
+        );
+
+        return;
+
+    }
+
+
+    const percentage =
+        ((present/total)*100).toFixed(2);
+
+
+    document.getElementById(
+        `percentage-${index}`
+    ).textContent =
+        percentage+"%";
+
+};
+
+
+window.saveAttendance =
+async function(index){
+
+    try{
+
+        const student =
+            students[index];
+
+        const present =
+            Number(
+                document.getElementById(
+                    `present-${index}`
+                ).value
+            );
+
+        const total =
+            Number(
+                document.getElementById(
+                    `total-${index}`
+                ).value
+            );
+
+
+        if(
+            !student ||
+            total <= 0 ||
+            present < 0 ||
+            present > total
+        ){
+
+            alert(
+                "Attendance values check karo."
+            );
+
+            return;
+
+        }
+
+
+        const percentage =
+            Number(
+                ((present/total)*100)
+                .toFixed(2)
+            );
+
+
+        await setDoc(
+
+            doc(
+                db,
+                "attendance",
+                student.uid
+            ),
+
+            {
+
+                uid:student.uid,
+                studentName:student.name,
+                studentEmail:student.email,
+
+                present,
+                total,
+                percentage,
+
+                updatedAt:
+                    new Date().toISOString()
+
+            },
+
+            {merge:true}
+
+        );
+
+
+        await addDoc(
+
+            collection(
+                db,
+                "users",
+                student.uid,
+                "notifications"
+            ),
+
+            {
+
+                title:
+                    "📊 Attendance Updated",
+
+                message:
+                    `Your attendance has been updated to ${percentage}%. (${present}/${total})`,
+
+                read:false,
+                type:"attendance",
+
+                createdAt:
+                    new Date().toISOString()
+
+            }
+
+        );
+
+
+        showMessage(
+            "Attendance saved successfully.",
+            "success"
+        );
+
+
+        await loadAttendance();
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Attendance save nahi hua: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+/* ================= REQUESTS ================= */
+
+function loadRequests(){
+
+    const table =
+        document.getElementById(
+            "requestsTable"
+        );
+
+
+    if(unsubscribeRequests){
+
+        unsubscribeRequests();
+
+    }
+
+
+    unsubscribeRequests =
+        onSnapshot(
+
+            collection(db,"requests"),
+
+            snapshot=>{
+
+                requests = [];
+
+
+                snapshot.forEach(docSnap=>{
+
+                    const data =
+                        docSnap.data();
+
+                    requests.push({
+
+                        id:docSnap.id,
+                        ...data,
+
+                        status:
+                            data.status ||
+                            "Pending"
+
+                    });
+
+                });
+
+
+                requests.sort(
+                    (a,b)=>
+                    new Date(b.createdAt || 0) -
+                    new Date(a.createdAt || 0)
+                );
+
+
+                document.getElementById(
+                    "requestCount"
+                ).textContent =
+                    requests.length;
+
+
+                const pending =
+                    requests.filter(
+                        request =>
+                        String(
+                            request.status
+                        ).toLowerCase()
+                        .trim()
+                        === "pending"
+                    ).length;
+
+
+                document.getElementById(
+                    "pendingCount"
+                ).textContent =
+                    pending;
+
+
+                displayRequests();
+
+            },
+
+            error=>{
+
+                console.error(error);
+
+                showMessage(
+                    "Firebase requests error: "+
+                    error.message,
+                    "error"
+                );
+
+            }
+
+        );
+
+}
+
+
+function displayRequests(){
+
+    const table =
+        document.getElementById(
+            "requestsTable"
+        );
+
+
+    if(requests.length === 0){
+
+        table.innerHTML = `
+
+        <tr>
+
+        <td colspan="6"
+        style="text-align:center;padding:30px;">
+
+        No student requests found.
+
+        </td>
+
+        </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+
+    requests.map((request,index)=>{
+
+        const status =
+            String(
+                request.status || "Pending"
+            ).trim();
+
+
+        const lower =
+            status.toLowerCase();
+
+
+        const student =
+            students.find(
+                s =>
+                s.uid === request.studentUid
+            );
+
+
+        const studentName =
+            request.studentName ||
+            (student ? student.name : "Student");
+
+
+        const studentEmail =
+            request.studentEmail ||
+            (student ? student.email : "");
+
+
+        const details =
+            request.description ||
+            request.reason ||
+            request.details ||
+            request.title ||
+            "-";
+
+
+        let actionHTML = "";
+
+
+        if(lower === "pending"){
+
+            actionHTML = `
+
+            <div class="request-actions">
+
+            <button
+            class="approve-btn"
+            onclick="updateRequestStatus(
+            '${request.id}',
+            'Approved'
+            )">
+
+            ✅ Approve
+
+            </button>
+
+            <button
+            class="reject-btn"
+            onclick="updateRequestStatus(
+            '${request.id}',
+            'Rejected'
+            )">
+
+            ❌ Reject
+
+            </button>
+
+            </div>
+
+            `;
+
+        }else{
+
+            actionHTML = `
+            <strong>
+            ${escapeHTML(status)}
+            </strong>
+            `;
+
+        }
+
+
+        return `
+
+        <tr>
+
+        <td>${index+1}</td>
+
+        <td>
+
+        <strong>
+        ${escapeHTML(studentName)}
+        </strong>
+
+        <br>
+
+        <span class="small-text">
+        ${escapeHTML(studentEmail)}
+        </span>
+
+        </td>
+
+        <td>
+        ${escapeHTML(
+            request.type || "Request"
+        )}
+        </td>
+
+        <td>
+        ${escapeHTML(details)}
+        </td>
+
+        <td>
+
+        <span class="status ${
+            lower === "approved"
+            ? "approved"
+            :
+            lower === "rejected"
+            ? "rejected"
+            : "pending"
+        }">
+
+        ${escapeHTML(status)}
+
+        </span>
+
+        </td>
+
+        <td>
+        ${actionHTML}
+        </td>
+
+        </tr>
+
+        `;
+
+    }).join("");
+
+}
+
+
+window.updateRequestStatus =
+async function(requestId,newStatus){
+
+    try{
+
+        const request =
+            requests.find(
+                item =>
+                item.id === requestId
+            );
+
+
+        if(!request){
+
+            alert("Request nahi mila.");
+
+            return;
+
+        }
+
+
+        await updateDoc(
+
+            doc(
+                db,
+                "requests",
+                requestId
+            ),
+
+            {
+
+                status:newStatus,
+
+                updatedAt:
+                    new Date().toISOString()
+
+            }
+
+        );
+
+
+        if(request.studentUid){
+
+            try{
+
+                await addDoc(
+
+                    collection(
+                        db,
+                        "users",
+                        request.studentUid,
+                        "notifications"
+                    ),
+
+                    {
+
+                        title:
+                            newStatus === "Approved"
+                            ?
+                            "✅ Request Approved"
+                            :
+                            "❌ Request Rejected",
+
+                        message:
+                            `Your ${
+                                request.type ||
+                                "request"
+                            } has been ${
+                                newStatus.toLowerCase()
+                            }.`,
+
+
+                        read:false,
+                        type:"request",
+                        requestId,
+
+                        createdAt:
+                            new Date().toISOString()
+
+                    }
+
+                );
+
+            }catch(error){
+
+                console.error(error);
+
+            }
+
+        }
+
+
+        showMessage(
+            `Request ${newStatus.toLowerCase()} successfully.`,
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Request update failed: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+/* ================= PAYMENTS ================= */
+
+function loadPayments(){
+
+    const table =
+        document.getElementById(
+            "paymentsTable"
+        );
+
+
+    if(unsubscribePayments){
+
+        unsubscribePayments();
+
+    }
+
+
+    unsubscribePayments =
+        onSnapshot(
+
+            collectionGroup(
+                db,
+                "paymentHistory"
+            ),
+
+            snapshot=>{
+
+                payments = [];
+
+
+                snapshot.forEach(docSnap=>{
+
+                    payments.push({
+
+                        id:docSnap.id,
+                        ...docSnap.data()
+
+                    });
+
+                });
+
+
+                payments.sort((a,b)=>{
+
+                    const aTime =
+                        a.submittedAt?.toMillis
+                        ?
+                        a.submittedAt.toMillis()
+                        :
+                        new Date(
+                            a.submittedAt || 0
+                        ).getTime();
+
+                    const bTime =
+                        b.submittedAt?.toMillis
+                        ?
+                        b.submittedAt.toMillis()
+                        :
+                        new Date(
+                            b.submittedAt || 0
+                        ).getTime();
+
+                    return bTime-aTime;
+
+                });
+
+
+                const pending =
+                    payments.filter(
+                        payment =>
+                        String(
+                            payment.status ||
+                            "Pending"
+                        ).toLowerCase()
+                        === "pending"
+                    ).length;
+
+
+                document.getElementById(
+                    "pendingPaymentCount"
+                ).textContent =
+                    pending;
+
+
+                displayPayments();
+
+            },
+
+            error=>{
+
+                console.error(error);
+
+                showMessage(
+                    "Payment load error: "+
+                    error.message,
+                    "error"
+                );
+
+            }
+
+        );
+
+}
+
+
+function displayPayments(){
+
+    const table =
+        document.getElementById(
+            "paymentsTable"
+        );
+
+
+    if(payments.length === 0){
+
+        table.innerHTML = `
+
+        <tr>
+
+        <td colspan="9"
+        style="text-align:center;padding:30px;">
+
+        No payment submissions found.
+
+        </td>
+
+        </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    table.innerHTML =
+
+    payments.map((payment,index)=>{
+
+        const status =
+            String(
+                payment.status || "Pending"
+            );
+
+        const lower =
+            status.toLowerCase();
+
+
+        const student =
+            students.find(
+                s =>
+                s.uid === payment.studentUid
+            );
+
+
+        const studentName =
+            payment.studentName ||
+            (student ? student.name : "Student");
+
+
+        const studentEmail =
+            payment.studentEmail ||
+            (student ? student.email : "");
+
+
+        let actionHTML = "";
+
+
+        if(lower === "pending"){
+
+            actionHTML = `
+
+            <div class="payment-actions">
+
+            <button
+            class="verify-btn"
+            onclick="verifyPayment(
+                '${payment.id}',
+                '${payment.studentUid}'
+            )">
+
+            ✅ Verify
+
+            </button>
+
+            <button
+            class="reject-btn"
+            onclick="rejectPayment(
+                '${payment.id}',
+                '${payment.studentUid}'
+            )">
+
+            ❌ Reject
+
+            </button>
+
+            </div>
+
+            `;
+
+        }else{
+
+            actionHTML = `
+            <span class="small-text">
+            ${escapeHTML(
+                payment.verifiedBy ||
+                "Administrator"
+            )}
+            </span>
+            `;
+
+        }
+
+
+        return `
+
+        <tr>
+
+        <td>${index+1}</td>
+
+        <td>
+
+        <strong>
+        ${escapeHTML(studentName)}
+        </strong>
+
+        <br>
+
+        <span class="small-text">
+        ${escapeHTML(studentEmail)}
+        </span>
+
+        </td>
+
+        <td>
+        ₹${formatMoney(payment.amount)}
+        </td>
+
+        <td>
+        ${escapeHTML(
+            payment.paymentMethod || "-"
+        )}
+        </td>
+
+        <td>
+        ${escapeHTML(
+            payment.transactionId || "-"
+        )}
+        </td>
+
+        <td>
+        ${formatDate(payment.paymentDate)}
+        </td>
+
+        <td>
+        ${formatDate(payment.submittedAt)}
+        </td>
+
+        <td>
+
+        <span class="status ${
+            lower === "verified"
+            ? "verified"
+            :
+            lower === "rejected"
+            ? "rejected"
+            : "pending"
+        }">
+
+        ${escapeHTML(status)}
+
+        </span>
+
+        </td>
+
+        <td>
+        ${actionHTML}
+        </td>
+
+        </tr>
+
+        `;
+
+    }).join("");
+
+}
+
+
+window.verifyPayment =
+async function(paymentId,studentUid){
+
+    const payment =
+        payments.find(
+            item =>
+            item.id === paymentId &&
+            item.studentUid === studentUid
+        );
+
+
+    if(!payment){
+
+        alert("Payment nahi mila.");
+
+        return;
+
+    }
+
+
+    const amount =
+        Number(payment.amount || 0);
+
+
+    if(amount <= 0){
+
+        alert("Payment amount invalid hai.");
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            `₹${formatMoney(amount)} payment ko verify karna hai?`
+        )
+    ){
+
+        return;
+
+    }
+
+
+    try{
+
+        const paymentRef =
+            doc(
+                db,
+                "fees",
+                studentUid,
+                "paymentHistory",
+                paymentId
+            );
+
+
+        const feeRef =
+            doc(
+                db,
+                "fees",
+                studentUid
+            );
+
+
+        await runTransaction(
+            db,
+            async(transaction)=>{
+
+                const paymentSnap =
+                    await transaction.get(
+                        paymentRef
+                    );
+
+
+                if(!paymentSnap.exists()){
+
+                    throw new Error(
+                        "Payment record nahi mila."
+                    );
+
+                }
+
+
+                const paymentData =
+                    paymentSnap.data();
+
+
+                if(
+                    String(
+                        paymentData.status ||
+                        "Pending"
+                    ).toLowerCase()
+                    !== "pending"
+                ){
+
+                    throw new Error(
+                        "Ye payment already process ho chuka hai."
+                    );
+
+                }
+
+
+                const feeSnap =
+                    await transaction.get(
+                        feeRef
+                    );
+
+
+                if(!feeSnap.exists()){
+
+                    throw new Error(
+                        "Student fee record nahi mila."
+                    );
+
+                }
+
+
+                const feeData =
+                    feeSnap.data();
+
+
+                const totalFee =
+                    Number(
+                        feeData.totalFee || 0
+                    );
+
+
+                const currentPaid =
+                    Number(
+                        feeData.paidAmount || 0
+                    );
+
+
+                if(totalFee <= 0){
+
+                    throw new Error(
+                        "Student ka total fee set nahi hai."
+                    );
+
+                }
+
+
+                if(
+                    currentPaid + amount >
+                    totalFee
+                ){
+
+                    throw new Error(
+                        "Payment verify karne par paid amount total fee se zyada ho jayega."
+                    );
+
+                }
+
+
+                const newPaid =
+                    currentPaid + amount;
+
+
+                const newStatus =
+                    newPaid >= totalFee
+                    ? "Paid"
+                    : "Pending";
+
+
+                transaction.update(
+
+                    paymentRef,
+
+                    {
+
+                        status:"Verified",
+
+                        verifiedAt:
+                            new Date().toISOString(),
+
+                        verifiedBy:
+                            "Administrator"
+
+                    }
+
+                );
+
+
+                transaction.update(
+
+                    feeRef,
+
+                    {
+
+                        paidAmount:newPaid,
+
+                        status:newStatus,
+
+                        updatedAt:
+                            new Date().toISOString(),
+
+                        updatedBy:
+                            "Administrator"
+
+                    }
+
+                );
+
+            }
+        );
+
+
+        try{
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "users",
+                    studentUid,
+                    "notifications"
+                ),
+
+                {
+
+                    title:
+                        "✅ Payment Verified",
+
+                    message:
+                        `Your payment of ₹${formatMoney(amount)} has been verified and added to Payment History.`,
+
+                    read:false,
+                    type:"payment",
+                    paymentId,
+
+                    createdAt:
+                        new Date().toISOString()
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+
+        showMessage(
+            "✅ Payment verified successfully!",
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Payment verify nahi hua: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+window.rejectPayment =
+async function(paymentId,studentUid){
+
+    const payment =
+        payments.find(
+            item =>
+            item.id === paymentId &&
+            item.studentUid === studentUid
+        );
+
+
+    if(!payment){
+
+        alert("Payment nahi mila.");
+
+        return;
+
+    }
+
+
+    if(
+        String(
+            payment.status || "Pending"
+        ).toLowerCase()
+        !== "pending"
+    ){
+
+        alert(
+            "Ye payment already process ho chuka hai."
+        );
+
+        return;
+
+    }
+
+
+    const reason =
+        prompt(
+            "Payment reject karne ka reason enter karo:"
+        );
+
+
+    if(reason === null){
+
+        return;
+
+    }
+
+
+    try{
+
+        const paymentRef =
+            doc(
+                db,
+                "fees",
+                studentUid,
+                "paymentHistory",
+                paymentId
+            );
+
+
+        const paymentSnap =
+            await getDoc(paymentRef);
+
+
+        if(!paymentSnap.exists()){
+
+            throw new Error(
+                "Payment record nahi mila."
+            );
+
+        }
+
+
+        const currentData =
+            paymentSnap.data();
+
+
+        if(
+            String(
+                currentData.status ||
+                "Pending"
+            ).toLowerCase()
+            !== "pending"
+        ){
+
+            throw new Error(
+                "Payment already process ho chuka hai."
+            );
+
+        }
+
+
+        await updateDoc(
+
+            paymentRef,
+
+            {
+
+                status:"Rejected",
+
+                verifiedAt:
+                    new Date().toISOString(),
+
+                verifiedBy:
+                    "Administrator",
+
+                rejectionReason:
+                    reason.trim()
+
+            }
+
+        );
+
+
+        try{
+
+            await addDoc(
+
+                collection(
+                    db,
+                    "users",
+                    studentUid,
+                    "notifications"
+                ),
+
+                {
+
+                    title:
+                        "❌ Payment Rejected",
+
+                    message:
+                        `Your payment of ₹${formatMoney(payment.amount)} was rejected.${
+                            reason.trim()
+                            ?
+                            " Reason: "+reason.trim()
+                            :
+                            ""
+                        }`,
+
+                    read:false,
+                    type:"payment",
+                    paymentId,
+
+                    createdAt:
+                        new Date().toISOString()
+
+                }
+
+            );
+
+        }catch(error){
+
+            console.error(error);
+
+        }
+
+
+        showMessage(
+            "❌ Payment rejected.",
+            "success"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Payment reject nahi hua: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+};
+
+
+/* ================= LOGOUT ================= */
+
+window.logout =
+async function(){
+
+    try{
+
+        await signOut(auth);
+
+    }catch(error){
+
+        console.error(error);
+
+    }
+
+    localStorage.removeItem(
+        "currentUser"
+    );
+
+    window.location.href =
+        "admin.html";
+
+};
+
+
+/* ================= START ================= */
+
+async function initializeDashboard(){
+
+    if(!checkAdmin()){
+
+        return;
+
+    }
+
+
+    try{
+
+        await getStudents();
+
+        await loadAttendance();
+
+        loadRequests();
+
+        loadPayments();
+
+        loadTimetable();
+
+        calculateFeeTotal();
+
+    }catch(error){
+
+        console.error(error);
+
+        showMessage(
+            "Dashboard load failed: "+
+            error.message,
+            "error"
+        );
+
+    }
+
+}
+
+
+initializeDashboard();
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Complaint - CampusConnect</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<nav class="navbar">
+    <div class="logo">Campus<span>Connect</span></div>
+    <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="requests.html">My Requests</a>
+        <button onclick="logoutUser()" class="btn btn-danger">Logout</button>
+    </div>
+</nav>
+
+<main class="container page">
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">HOSTEL SERVICES</p>
+            <h1>Hostel Complaint</h1>
+            <p>Report hostel problems and track their status.</p>
+        </div>
+        <a href="services.html" class="btn btn-secondary">← Services</a>
+    </section>
+
+    <section class="grid-2">
+        <div class="card">
+            <p class="eyebrow">SUBMIT COMPLAINT</p>
+            <h2>Report a Problem</h2>
+
+            <form id="complaintForm">
+                <div class="form-group">
+                    <label for="category">Complaint Category</label>
+                    <select id="category" required>
+                        <option value="">Select Category</option>
+                        <option>Electrical</option>
+                        <option>Water</option>
+                        <option>Room</option>
+                        <option>Furniture</option>
+                        <option>Cleanliness</option>
+                        <option>Internet</option>
+                        <option>Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="room">Room Number</label>
+                    <input type="text" id="room" placeholder="Example: A-204" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">Complaint Title</label>
+                    <input type="text" id="title" placeholder="Example: Fan not working" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="details">Complaint Details</label>
+                    <textarea id="details" rows="6" placeholder="Describe the problem..." required></textarea>
+                </div>
+
+                <button type="submit" id="submitBtn" class="btn btn-primary">
+                    🛠️ Submit Complaint
+                </button>
+            </form>
+        </div>
+
+        <div>
+            <div class="card">
+                <p class="eyebrow">HOW IT WORKS</p>
+                <h2>Complaint Process</h2>
+                <div class="process-list">
+                    <div class="process-item">
+                        <strong>1. Submit</strong>
+                        <p>Enter your hostel problem and submit the complaint.</p>
+                    </div>
+                    <div class="process-item">
+                        <strong>2. Review</strong>
+                        <p>The administrator reviews your complaint.</p>
+                    </div>
+                    <div class="process-item">
+                        <strong>3. Action</strong>
+                        <p>The responsible team works on the reported problem.</p>
+                    </div>
+                    <div class="process-item">
+                        <strong>4. Track</strong>
+                        <p>Check the latest status from My Requests.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <p class="eyebrow">QUICK LINKS</p>
+                <div class="quick-links">
+                    <a href="requests.html" class="btn btn-secondary">📋 My Requests</a>
+                    <a href="dashboard.html" class="btn btn-secondary">🏠 Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <p>© 2026 CampusConnect • One Platform • All Campus Services</p>
+</footer>
+
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    collection,
+    addDoc,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+let firebaseUser = null;
+let studentName = "Student";
+
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        window.location.href = "index.html";
+        return;
+    }
+
+    firebaseUser = user;
+
+    try {
+        const profile = await getDoc(doc(db, "users", user.uid));
+        if (profile.exists()) {
+            studentName = profile.data().name || user.displayName || "Student";
+        }
+    } catch (error) {
+        console.error("Profile loading error:", error);
+    }
+});
+
+window.logoutUser = async function () {
+    try {
+        await signOut(auth);
+        localStorage.removeItem("currentUser");
+        window.location.href = "index.html";
+    } catch (error) {
+        alert("Logout failed: " + error.message);
+    }
+};
+
+document.getElementById("complaintForm").addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    if (!firebaseUser) {
+        alert("Please login first.");
+        window.location.href = "index.html";
+        return;
+    }
+
+    const category = document.getElementById("category").value;
+    const room = document.getElementById("room").value.trim();
+    const title = document.getElementById("title").value.trim();
+    const details = document.getElementById("details").value.trim();
+
+    if (!category || !room || !title || !details) {
+        alert("Please fill all fields.");
+        return;
+    }
+
+    const submitBtn = document.getElementById("submitBtn");
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    try {
+        const requestData = {
+            type: "Hostel Complaint",
+            title: title,
+            category: category,
+            room: room,
+            date: new Date().toISOString().split("T")[0],
+            description: `Category: ${category} | Room: ${room} | ${details}`,
+            details: details,
+            studentUid: firebaseUser.uid,
+            studentEmail: firebaseUser.email || "",
+            studentName: studentName,
+            status: "Pending",
+            createdAt: new Date().toISOString()
+        };
+
+        const requestRef = await addDoc(
+            collection(db, "requests"),
+            requestData
+        );
+
+        alert("Complaint submitted successfully!\nComplaint ID: " + requestRef.id);
+        window.location.href = "requests.html";
+
+    } catch (error) {
+        console.error("Complaint submission error:", error);
+        alert("Complaint submit failed: " + error.message);
+        submitBtn.disabled = false;
+        submitBtn.textContent = "🛠️ Submit Complaint";
+    }
+});
+</script>
+
+<style>
+.process-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+.process-item {
+    padding: 16px;
+    background: #f8fafc;
+    border-radius: 12px;
+}
+.process-item strong {
+    display: block;
+    margin-bottom: 6px;
+}
+.process-item p {
+    margin: 0;
+    color: #667085;
+    line-height: 1.5;
+}
+.quick-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+@media (max-width: 600px) {
+    .quick-links .btn {
+        width: 100%;
+    }
+}
+</style>
+
+</body>
+</html>

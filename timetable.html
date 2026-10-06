@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Timetable - CampusConnect</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        .day-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .day-buttons button.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th,
+        td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            background: #f3f4f6;
+        }
+
+        .info-box {
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        .next-class-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 25px;
+            color: #64748b;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        Campus<span>Connect</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">Dashboard</a>
+
+        <a href="attendance.html">Attendance</a>
+
+        <a href="services.html">Services</a>
+
+        <a href="requests.html">My Requests</a>
+
+        <button onclick="logoutUser()" class="btn btn-danger">
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-header">
+
+        <div>
+
+            <p class="eyebrow">
+                ACADEMIC SCHEDULE
+            </p>
+
+            <h1>
+                🗓️ Class Timetable
+            </h1>
+
+            <p>
+                View your weekly class schedule and next class.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- NEXT CLASS -->
+
+    <section class="card">
+
+        <h2>
+            ⏰ Next Class
+        </h2>
+
+        <div id="nextClass" class="info-box">
+
+            <div class="loading">
+                Loading next class...
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- WEEKLY TIMETABLE -->
+
+    <section class="card">
+
+        <h2>
+            📅 Weekly Schedule
+        </h2>
+
+
+        <div class="day-buttons">
+
+            <button
+                class="btn btn-secondary"
+                onclick="showDay('Monday')">
+                Monday
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showDay('Tuesday')">
+                Tuesday
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showDay('Wednesday')">
+                Wednesday
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showDay('Thursday')">
+                Thursday
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showDay('Friday')">
+                Friday
+            </button>
+
+            <button
+                class="btn btn-secondary"
+                onclick="showDay('Saturday')">
+                Saturday
+            </button>
+
+        </div>
+
+
+        <h3 id="selectedDay">
+            Loading...
+        </h3>
+
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Time
+                        </th>
+
+                        <th>
+                            Subject
+                        </th>
+
+                        <th>
+                            Room
+                        </th>
+
+                        <th>
+                            Teacher
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="timetableBody">
+
+                    <tr>
+
+                        <td colspan="4">
+
+                            <div class="loading">
+                                Loading timetable...
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- QUICK LINKS -->
+
+    <div class="quick-links">
+
+        <a
+            href="dashboard.html"
+            class="btn btn-secondary">
+            ← Dashboard
+        </a>
+
+        <a
+            href="attendance.html"
+            class="btn btn-primary">
+            Attendance →
+        </a>
+
+    </div>
+
+</main>
+
+
+<footer class="footer">
+
+    <p>
+        CampusConnect • One Platform • All Campus Services
+    </p>
+
+</footer>
+
+
+<!-- EXISTING APP.JS -->
+
+<script src="app.js"></script>
+
+
+<!-- FIREBASE TIMETABLE -->
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    collection,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+// ==========================================
+// GLOBAL DATA
+// ==========================================
+
+let allTimetable = [];
+
+let selectedDay = "";
+
+
+// ==========================================
+// DAY NAMES
+// ==========================================
+
+const days = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday"
+];
+
+
+// ==========================================
+// GET TODAY
+// ==========================================
+
+function getToday() {
+
+    return days[new Date().getDay()];
+
+}
+
+
+// ==========================================
+// NORMALIZE DAY
+// ==========================================
+
+function normalizeDay(value) {
+
+    if (!value) {
+        return "";
+    }
+
+    return String(value)
+        .trim()
+        .toLowerCase();
+
+}
+
+
+// ==========================================
+// GET TIMETABLE DAY
+// ==========================================
+
+function getItemDay(item) {
+
+    return (
+        item.day ||
+        item.dayName ||
+        item.dayOfWeek ||
+        item.weekday ||
+        item.Day ||
+        ""
+    );
+
+}
+
+
+// ==========================================
+// GET TIME
+// ==========================================
+
+function getItemTime(item) {
+
+    return (
+        item.time ||
+        item.startTime ||
+        item.classTime ||
+        item.Time ||
+        ""
+    );
+
+}
+
+
+// ==========================================
+// GET SUBJECT
+// ==========================================
+
+function getItemSubject(item) {
+
+    return (
+        item.subject ||
+        item.subjectName ||
+        item.course ||
+        item.title ||
+        item.Subject ||
+        "Subject"
+    );
+
+}
+
+
+// ==========================================
+// GET ROOM
+// ==========================================
+
+function getItemRoom(item) {
+
+    return (
+        item.room ||
+        item.roomNo ||
+        item.classroom ||
+        item.location ||
+        item.Room ||
+        "-"
+    );
+
+}
+
+
+// ==========================================
+// GET TEACHER
+// ==========================================
+
+function getItemTeacher(item) {
+
+    return (
+        item.teacher ||
+        item.teacherName ||
+        item.faculty ||
+        item.facultyName ||
+        item.instructor ||
+        item.Teacher ||
+        "-"
+    );
+
+}
+
+
+// ==========================================
+// CONVERT TIME TO MINUTES
+// ==========================================
+
+function timeToMinutes(time) {
+
+    if (!time) {
+        return 9999;
+    }
+
+    let value = String(time)
+        .trim()
+        .toUpperCase();
+
+    let match = value.match(
+        /^(\d{1,2}):(\d{2})\s*(AM|PM)?$/
+    );
+
+    if (!match) {
+
+        return 9999;
+
+    }
+
+    let hour = Number(match[1]);
+
+    let minute = Number(match[2]);
+
+    let period = match[3];
+
+
+    if (period === "PM" && hour !== 12) {
+
+        hour += 12;
+
+    }
+
+
+    if (period === "AM" && hour === 12) {
+
+        hour = 0;
+
+    }
+
+
+    return hour * 60 + minute;
+
+}
+
+
+// ==========================================
+// LOAD TIMETABLE FROM FIREBASE
+// ==========================================
+
+function loadTimetable() {
+
+    const timetableRef =
+        collection(db, "timetable");
+
+
+    onSnapshot(
+        timetableRef,
+
+        snapshot => {
+
+            allTimetable = [];
+
+
+            snapshot.forEach(docSnap => {
+
+                allTimetable.push({
+
+                    id: docSnap.id,
+
+                    ...docSnap.data()
+
+                });
+
+            });
+
+
+            console.log(
+                "Firebase timetable:",
+                allTimetable
+            );
+
+
+            const today = getToday();
+
+
+            if (
+                today !== "Sunday" &&
+                today !== "Saturday"
+            ) {
+
+                showDay(today);
+
+            } else {
+
+                showDay("Monday");
+
+            }
+
+
+            showNextClass();
+
+        },
+
+        error => {
+
+            console.error(
+                "Timetable loading error:",
+                error
+            );
+
+
+            document.getElementById(
+                "timetableBody"
+            ).innerHTML = `
+
+                <tr>
+
+                    <td colspan="4">
+
+                        <div
+                            class="empty-message"
+                            style="color:#dc2626;"
+                        >
+
+                            ❌ Unable to load timetable.
+
+                            <br>
+
+                            Please check Firebase connection.
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+            `;
+
+
+            document.getElementById(
+                "nextClass"
+            ).innerHTML = `
+
+                <strong>
+                    ❌ Unable to load timetable
+                </strong>
+
+                <p>
+                    Please try again later.
+                </p>
+
+            `;
+
+        }
+
+    );
+
+}
+
+
+// ==========================================
+// SHOW SELECTED DAY
+// ==========================================
+
+window.showDay = function(day) {
+
+    selectedDay = day;
+
+
+    document.getElementById(
+        "selectedDay"
+    ).textContent = day;
+
+
+    // Active button
+
+    document
+        .querySelectorAll(".day-buttons button")
+        .forEach(button => {
+
+            if (
+                button.textContent
+                    .trim()
+                    .toLowerCase() ===
+                day.toLowerCase()
+            ) {
+
+                button.classList.add("active");
+
+            } else {
+
+                button.classList.remove("active");
+
+            }
+
+        });
+
+
+    const body =
+        document.getElementById(
+            "timetableBody"
+        );
+
+
+    body.innerHTML = "";
+
+
+    // Filter selected day
+
+    let dayData =
+        allTimetable.filter(item => {
+
+            const itemDay =
+                getItemDay(item);
+
+            return (
+                normalizeDay(itemDay) ===
+                normalizeDay(day)
+            );
+
+        });
+
+
+    // Sort by time
+
+    dayData.sort((a, b) => {
+
+        return (
+            timeToMinutes(
+                getItemTime(a)
+            ) -
+            timeToMinutes(
+                getItemTime(b)
+            )
+        );
+
+    });
+
+
+    // No classes
+
+    if (dayData.length === 0) {
+
+        body.innerHTML = `
+
+            <tr>
+
+                <td colspan="4">
+
+                    <div class="empty-message">
+
+                        📚 No classes scheduled for
+                        <strong>${day}</strong>.
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+
+    }
+
+
+    // Show classes
+
+    dayData.forEach(item => {
+
+        const row =
+            document.createElement("tr");
+
+
+        const time =
+            getItemTime(item);
+
+        const subject =
+            getItemSubject(item);
+
+        const room =
+            getItemRoom(item);
+
+        const teacher =
+            getItemTeacher(item);
+
+
+        row.innerHTML = `
+
+            <td>
+                <strong>
+                    ${time || "-"}
+                </strong>
+            </td>
+
+            <td>
+                ${subject}
+            </td>
+
+            <td>
+                ${room}
+            </td>
+
+            <td>
+                ${teacher}
+            </td>
+
+        `;
+
+
+        body.appendChild(row);
+
+    });
+
+};
+
+
+// ==========================================
+// NEXT CLASS
+// ==========================================
+
+function showNextClass() {
+
+    const box =
+        document.getElementById(
+            "nextClass"
+        );
+
+
+    const today =
+        getToday();
+
+
+    // Sunday
+
+    if (today === "Sunday") {
+
+        box.innerHTML = `
+
+            <div class="next-class-title">
+                🎉 No classes today
+            </div>
+
+            <p>
+                Enjoy your Sunday!
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    // Get today's classes
+
+    let todayData =
+        allTimetable.filter(item => {
+
+            return (
+                normalizeDay(
+                    getItemDay(item)
+                ) ===
+                normalizeDay(today)
+            );
+
+        });
+
+
+    // Sort
+
+    todayData.sort((a, b) => {
+
+        return (
+            timeToMinutes(
+                getItemTime(a)
+            ) -
+            timeToMinutes(
+                getItemTime(b)
+            )
+        );
+
+    });
+
+
+    if (todayData.length === 0) {
+
+        box.innerHTML = `
+
+            <div class="next-class-title">
+                📚 No classes today
+            </div>
+
+            <p>
+                No classes are scheduled for
+                ${today}.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    const currentMinutes =
+        now.getHours() * 60 +
+        now.getMinutes();
+
+
+    let next = null;
+
+
+    for (
+        let item of todayData
+    ) {
+
+        const classMinutes =
+            timeToMinutes(
+                getItemTime(item)
+            );
+
+
+        if (
+            classMinutes >=
+            currentMinutes
+        ) {
+
+            next = item;
+
+            break;
+
+        }
+
+    }
+
+
+    // All classes completed
+
+    if (!next) {
+
+        box.innerHTML = `
+
+            <div class="next-class-title">
+                ✅ Today's classes are completed
+            </div>
+
+            <p>
+                No more classes scheduled for today.
+            </p>
+
+        `;
+
+        return;
+
+    }
+
+
+    // Show next class
+
+    box.innerHTML = `
+
+        <div class="next-class-title">
+
+            📚 ${getItemSubject(next)}
+
+        </div>
+
+        <p>
+            ⏰ Time:
+            <strong>
+                ${getItemTime(next) || "-"}
+            </strong>
+        </p>
+
+        <p>
+            🏫 Room:
+            <strong>
+                ${getItemRoom(next)}
+            </strong>
+        </p>
+
+        <p>
+            👨‍🏫 Teacher:
+            <strong>
+                ${getItemTeacher(next)}
+            </strong>
+        </p>
+
+    `;
+
+}
+
+
+// ==========================================
+// AUTH CHECK
+// ==========================================
+
+auth.onAuthStateChanged(user => {
+
+    if (!user) {
+
+        window.location.href =
+            "index.html";
+
+        return;
+
+    }
+
+
+    // User logged in
+
+    loadTimetable();
+
+});
+
+
+</script>
+
+</body>
+</html>

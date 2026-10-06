@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Login - CampusConnect</title>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f7fb;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.login-box{
+    width:90%;
+    max-width:430px;
+    background:white;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 10px 35px rgba(0,0,0,0.12);
+}
+
+.logo{
+    text-align:center;
+    font-size:30px;
+    font-weight:bold;
+    color:#1746d1;
+    margin-bottom:8px;
+}
+
+.logo span{
+    color:#6b8cff;
+}
+
+.admin-title{
+    text-align:center;
+    color:#172033;
+    margin-bottom:5px;
+}
+
+.subtitle{
+    text-align:center;
+    color:#667085;
+    margin-bottom:30px;
+}
+
+label{
+    display:block;
+    margin-top:18px;
+    margin-bottom:7px;
+    font-weight:bold;
+    color:#344054;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #d0d5dd;
+    border-radius:10px;
+    font-size:15px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#1746d1;
+}
+
+button{
+    width:100%;
+    margin-top:25px;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:#1746d1;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1239ad;
+}
+
+.error{
+    display:none;
+    margin-top:15px;
+    padding:12px;
+    border-radius:8px;
+    background:#fee4e2;
+    color:#b42318;
+    text-align:center;
+}
+
+.back{
+    display:block;
+    text-align:center;
+    margin-top:20px;
+    color:#1746d1;
+    text-decoration:none;
+}
+
+.demo{
+    margin-top:25px;
+    padding:15px;
+    background:#f2f4f7;
+    border-radius:10px;
+    font-size:13px;
+    color:#475467;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+
+    <div class="logo">
+        Campus<span>Connect</span>
+    </div>
+
+    <h2 class="admin-title">
+        👨‍💼 Admin Login
+    </h2>
+
+    <p class="subtitle">
+        Campus Administration Portal
+    </p>
+
+    <form id="adminLoginForm">
+
+        <label>Email</label>
+
+        <input
+            type="email"
+            id="adminEmail"
+            placeholder="Enter admin email"
+            required
+        >
+
+        <label>Password</label>
+
+        <input
+            type="password"
+            id="adminPassword"
+            placeholder="Enter admin password"
+            required
+        >
+
+        <button type="submit">
+            🔐 Login as Admin
+        </button>
+
+    </form>
+
+    <div id="errorMessage" class="error">
+        Invalid admin email or password.
+    </div>
+
+    <div class="demo">
+        <b>Demo Admin Account</b><br><br>
+        Email: admin@campusconnect.com<br>
+        Password: admin123
+    </div>
+
+    <a href="index.html" class="back">
+        ← Back to Student Login
+    </a>
+
+</div>
+
+
+<script>
+
+document.getElementById("adminLoginForm")
+.addEventListener("submit", function(e){
+
+    e.preventDefault();
+
+    const email =
+        document.getElementById("adminEmail").value.trim();
+
+    const password =
+        document.getElementById("adminPassword").value;
+
+    const error =
+        document.getElementById("errorMessage");
+
+    if(
+        email === "satyaranjanparida37087@gmail.com" &&
+        password === "satya@123"
+    ){
+
+        const adminUser = {
+            name: "Campus Administrator",
+            email: "admin@campusconnect.com",
+            role: "admin"
+        };
+
+        localStorage.setItem(
+            "currentUser",
+            JSON.stringify(adminUser)
+        );
+
+        window.location.href =
+            "admin-dashboard.html";
+
+    } else {
+
+        error.style.display = "block";
+
+    }
+
+});
+
+</script>

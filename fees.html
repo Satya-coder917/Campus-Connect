@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>CampusConnect | Fees & Payments</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    background:#f4f7fb;
+    font-family:Arial,sans-serif;
+    color:#111827;
+}
+
+.topbar{
+    background:#fff;
+    min-height:70px;
+    padding:12px 30px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    box-shadow:0 2px 12px rgba(0,0,0,.08);
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:23px;
+    font-weight:bold;
+}
+
+.logo span{
+    color:#2563eb;
+}
+
+.top-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.btn{
+    display:inline-block;
+    padding:10px 16px;
+    border:none;
+    border-radius:8px;
+    text-decoration:none;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#1d4ed8;
+}
+
+.btn-secondary{
+    background:#e5e7eb;
+    color:#111827;
+}
+
+.btn-danger{
+    background:#dc2626;
+    color:white;
+}
+
+.btn-danger:hover{
+    background:#b91c1c;
+}
+
+.btn-success{
+    background:#16a34a;
+    color:white;
+}
+
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:30px 20px;
+}
+
+.page-header{
+    background:linear-gradient(135deg,#2563eb,#1e40af);
+    color:white;
+    padding:32px;
+    border-radius:20px;
+    margin-bottom:25px;
+    box-shadow:0 8px 25px rgba(37,99,235,.20);
+}
+
+.page-header h1{
+    margin:0 0 8px;
+    font-size:32px;
+}
+
+.page-header p{
+    margin:0;
+    opacity:.9;
+}
+
+.section{
+    background:white;
+    padding:25px;
+    border-radius:18px;
+    margin-bottom:25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.05);
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin:0 0 20px;
+}
+
+.student-info{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:15px;
+}
+
+.info-box{
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+    padding:16px;
+    border-radius:12px;
+}
+
+.info-box small{
+    display:block;
+    color:#6b7280;
+    margin-bottom:7px;
+}
+
+.info-box strong{
+    font-size:15px;
+    word-break:break-word;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+}
+
+.summary-card{
+    padding:22px;
+    border-radius:16px;
+    background:#f8fafc;
+    border:1px solid #e5e7eb;
+}
+
+.summary-icon{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.summary-card h3{
+    margin:0;
+    font-size:27px;
+}
+
+.summary-card p{
+    margin:7px 0 0;
+    color:#6b7280;
+}
+
+.total-card{
+    background:#eff6ff;
+    border-color:#bfdbfe;
+}
+
+.paid-card{
+    background:#ecfdf5;
+    border-color:#bbf7d0;
+}
+
+.pending-card{
+    background:#fffbeb;
+    border-color:#fde68a;
+}
+
+.due-card{
+    background:#fef2f2;
+    border-color:#fecaca;
+}
+
+.progress-area{
+    margin-top:25px;
+}
+
+.progress-header{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:8px;
+    font-weight:600;
+}
+
+.progress-bar{
+    width:100%;
+    height:14px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:#16a34a;
+    border-radius:20px;
+    transition:.5s;
+}
+
+.fee-table,
+.history-table,
+.pending-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.fee-table th,
+.fee-table td,
+.history-table th,
+.history-table td,
+.pending-table th,
+.pending-table td{
+    padding:14px;
+    border-bottom:1px solid #e5e7eb;
+    text-align:left;
+}
+
+.fee-table th,
+.history-table th,
+.pending-table th{
+    background:#f8fafc;
+    font-size:14px;
+}
+
+.fee-table td:last-child,
+.fee-table th:last-child,
+.history-table td:last-child,
+.history-table th:last-child{
+    text-align:right;
+}
+
+.fee-total td{
+    font-weight:bold;
+    font-size:17px;
+    background:#f8fafc;
+}
+
+.status{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status-paid,
+.status-verified{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-pending{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-overdue,
+.status-rejected{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.form-group label{
+    font-weight:600;
+    font-size:14px;
+}
+
+.form-group input,
+.form-group select{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:9px;
+    font-size:14px;
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+    border-color:#2563eb;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.payment-note{
+    background:#eff6ff;
+    border-left:4px solid #2563eb;
+    padding:14px;
+    border-radius:8px;
+    margin-bottom:20px;
+    color:#374151;
+}
+
+.pending-payment{
+    background:#fffbeb;
+    border:1px solid #fde68a;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:12px;
+}
+
+.verified-payment{
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+}
+
+.rejected-payment{
+    background:#fef2f2;
+    border:1px solid #fecaca;
+}
+
+.transaction-id{
+    font-family:monospace;
+    color:#555;
+    font-size:13px;
+}
+
+.remark-box{
+    background:#eff6ff;
+    border-left:4px solid #2563eb;
+    padding:15px;
+    border-radius:8px;
+    color:#374151;
+}
+
+.loading{
+    text-align:center;
+    padding:35px;
+    color:#777;
+}
+
+.no-data{
+    text-align:center;
+    padding:35px;
+    color:#777;
+}
+
+.error{
+    background:#fee2e2;
+    color:#991b1b;
+    padding:15px;
+    border-radius:10px;
+}
+
+.small-text{
+    font-size:13px;
+    color:#6b7280;
+}
+
+.footer{
+    text-align:center;
+    padding:25px;
+    color:#777;
+}
+
+@media(max-width:950px){
+
+    .student-info{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .summary-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+}
+
+@media(max-width:650px){
+
+    .topbar{
+        padding:12px 15px;
+    }
+
+    .top-actions .btn-secondary{
+        display:none;
+    }
+
+    .container{
+        padding:20px 12px;
+    }
+
+    .page-header{
+        padding:25px;
+    }
+
+    .page-header h1{
+        font-size:25px;
+    }
+
+    .student-info,
+    .summary-grid,
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+
+    .section{
+        padding:18px;
+    }
+
+    .table-wrapper{
+        overflow-x:auto;
+    }
+
+    .fee-table,
+    .history-table,
+    .pending-table{
+        min-width:650px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<nav class="topbar">
+
+    <div class="logo">
+        🎓 Campus<span>Connect</span>
+    </div>
+
+    <div class="top-actions">
+
+        <a href="dashboard.html" class="btn btn-secondary">
+            Dashboard
+        </a>
+
+        <a href="profile.html" class="btn btn-secondary">
+            Profile
+        </a>
+
+        <button onclick="logoutUser()" class="btn btn-danger">
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<main class="container">
+
+
+<section class="page-header">
+
+    <h1>
+        💳 Fees & Payments
+    </h1>
+
+    <p>
+        View your semester fees, submit payments and track verification.
+    </p>
+
+</section>
+
+
+<!-- STUDENT INFORMATION -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        👤 Student Information
+    </h2>
+
+    <div id="studentInfo" class="student-info">
+
+        <div class="loading">
+            Loading student information...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FEE SUMMARY -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        💰 Fee Summary
+    </h2>
+
+    <div class="summary-grid">
+
+        <div class="summary-card total-card">
+
+            <div class="summary-icon">💰</div>
+
+            <h3 id="totalFee">
+                ₹0
+            </h3>
+
+            <p>
+                Total Fee
+            </p>
+
+        </div>
+
+
+        <div class="summary-card paid-card">
+
+            <div class="summary-icon">✅</div>
+
+            <h3 id="paidAmount">
+                ₹0
+            </h3>
+
+            <p>
+                Verified Paid
+            </p>
+
+        </div>
+
+
+        <div class="summary-card pending-card">
+
+            <div class="summary-icon">⏳</div>
+
+            <h3 id="pendingAmount">
+                ₹0
+            </h3>
+
+            <p>
+                Pending Amount
+            </p>
+
+        </div>
+
+
+        <div class="summary-card due-card">
+
+            <div class="summary-icon">📅</div>
+
+            <h3 id="dueDate">
+                —
+            </h3>
+
+            <p>
+                Due Date
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress-area">
+
+        <div class="progress-header">
+
+            <span>
+                Payment Progress
+            </span>
+
+            <span id="paymentPercentage">
+                0%
+            </span>
+
+        </div>
+
+        <div class="progress-bar">
+
+            <div
+                id="progressFill"
+                class="progress-fill">
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- FEE BREAKDOWN -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        📋 Fee Breakdown
+    </h2>
+
+    <div id="feeBreakdown">
+
+        <div class="loading">
+            Loading fee details...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- PAYMENT STATUS -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        📌 Payment Status
+    </h2>
+
+    <div id="paymentStatus" class="loading">
+        Checking payment status...
+    </div>
+
+</section>
+
+
+<!-- SUBMIT PAYMENT -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        💳 Submit Fee Payment
+    </h2>
+
+
+    <div class="payment-note">
+
+        <strong>Important:</strong>
+
+        After making the payment, enter the payment details below.
+        Your payment will remain <strong>Pending</strong> until the
+        college admin verifies it.
+
+    </div>
+
+
+    <form id="paymentForm">
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Payment Amount (₹)
+                </label>
+
+                <input
+                    type="number"
+                    id="paymentAmount"
+                    min="1"
+                    placeholder="Enter amount"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Payment Method
+                </label>
+
+                <select id="paymentMethod" required>
+
+                    <option value="">
+                        Select payment method
+                    </option>
+
+                    <option value="UPI">
+                        UPI
+                    </option>
+
+                    <option value="Net Banking">
+                        Net Banking
+                    </option>
+
+                    <option value="Debit Card">
+                        Debit Card
+                    </option>
+
+                    <option value="Credit Card">
+                        Credit Card
+                    </option>
+
+                    <option value="Cash">
+                        Cash
+                    </option>
+
+                    <option value="Other">
+                        Other
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Transaction ID / Reference Number
+                </label>
+
+                <input
+                    type="text"
+                    id="transactionId"
+                    placeholder="Enter transaction ID"
+                    required>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Payment Date
+                </label>
+
+                <input
+                    type="date"
+                    id="paymentDate"
+                    required>
+
+            </div>
+
+
+            <div class="form-group full">
+
+                <button
+                    type="submit"
+                    id="submitPaymentBtn"
+                    class="btn btn-primary">
+
+                    💳 Submit Payment for Verification
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+<!-- MY SUBMITTED PAYMENTS -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        🔎 My Payment Submissions
+    </h2>
+
+    <div id="myPayments">
+
+        <div class="loading">
+            Loading payment submissions...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- VERIFIED PAYMENT HISTORY -->
+
+<section class="section">
+
+    <h2 class="section-title">
+        🧾 Verified Payment History
+    </h2>
+
+    <div id="paymentHistory">
+
+        <div class="loading">
+            Loading verified payment history...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- REMARKS -->
+
+<section
+    id="remarksSection"
+    class="section"
+    style="display:none;">
+
+    <h2 class="section-title">
+        📝 College Remarks
+    </h2>
+
+    <div id="remarks" class="remark-box"></div>
+
+</section>
+
+
+<br>
+
+
+<a
+    href="dashboard.html"
+    class="btn btn-primary">
+
+    ← Back to Dashboard
+
+</a>
+
+
+</main>
+
+
+<footer class="footer">
+
+    © 2026 CampusConnect • One Platform • All Campus Services
+
+</footer>
+
+
+<script type="module">
+
+
+import {
+    auth,
+    db
+} from "./firebase-config.js";
+
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+import {
+    doc,
+    getDoc,
+    addDoc,
+    collection,
+    query,
+    where,
+    orderBy,
+    onSnapshot,
+    serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+let currentUser = null;
+
+let unsubscribeFees = null;
+let unsubscribePayments = null;
+
+
+/* =========================
+   AUTH
+========================= */
+
+onAuthStateChanged(
+
+    auth,
+
+    async (user) => {
+
+        if(!user){
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        currentUser = user;
+
+
+        await loadStudent(user);
+
+        loadFees(user);
+
+        loadMyPayments(user);
+
+        setTodayDate();
+
+    }
+
+);
+
+
+/* =========================
+   STUDENT INFORMATION
+========================= */
+
+async function loadStudent(user){
+
+    try{
+
+        const userRef =
+            doc(
+                db,
+                "users",
+                user.uid
+            );
+
+
+        const snapshot =
+            await getDoc(userRef);
+
+
+        const container =
+            document.getElementById(
+                "studentInfo"
+            );
+
+
+        if(!snapshot.exists()){
+
+            container.innerHTML = `
+
+                <div class="no-data">
+
+                    Student profile not found.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        container.innerHTML = `
+
+            <div class="info-box">
+
+                <small>
+                    Student Name
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        data.name || "Student"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <small>
+                    Student ID
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        data.studentId ||
+                        "Not Available"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <small>
+                    Department
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        data.department ||
+                        "Not Available"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <small>
+                    Semester
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        data.semester ||
+                        "Not Available"
+                    )}
+                </strong>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <small>
+                    Email
+                </small>
+
+                <strong>
+                    ${escapeHTML(
+                        user.email || ""
+                    )}
+                </strong>
+
+            </div>
+
+        `;
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Student error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================
+   FEES
+========================= */
+
+function loadFees(user){
+
+    const feesRef =
+        doc(
+            db,
+            "fees",
+            user.uid
+        );
+
+
+    if(unsubscribeFees){
+
+        unsubscribeFees();
+
+    }
+
+
+    unsubscribeFees =
+        onSnapshot(
+
+            feesRef,
+
+            (snapshot) => {
+
+                if(!snapshot.exists()){
+
+                    showNoFees();
+
+                    return;
+
+                }
+
+
+                const data =
+                    snapshot.data();
+
+
+                displayFeeData(data);
+
+            },
+
+            (error) => {
+
+                console.error(
+                    "Fees error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "feeBreakdown"
+                ).innerHTML = `
+
+                    <div class="error">
+
+                        Unable to load fee information.
+
+                        <br><br>
+
+                        ${escapeHTML(
+                            error.message
+                        )}
+
+                    </div>
+
+                `;
+
+            }
+
+        );
+
+}
+
+
+/* =========================
+   DISPLAY FEES
+========================= */
+
+function displayFeeData(data){
+
+    const tuition =
+        number(data.tuitionFee);
+
+    const hostel =
+        number(data.hostelFee);
+
+    const exam =
+        number(data.examFee);
+
+    const transport =
+        number(data.transportFee);
+
+    const other =
+        number(data.otherFee);
+
+
+    const calculatedTotal =
+        tuition +
+        hostel +
+        exam +
+        transport +
+        other;
+
+
+    const total =
+        number(data.totalFee) ||
+        calculatedTotal;
+
+
+    const paid =
+        number(data.paidAmount);
+
+
+    const pending =
+        Math.max(
+            total - paid,
+            0
+        );
+
+
+    let percentage =
+        total > 0
+        ? (paid / total) * 100
+        : 0;
+
+
+    percentage =
+        Math.min(
+            Math.max(
+                percentage,
+                0
+            ),
+            100
+        );
+
+
+    document.getElementById(
+        "totalFee"
+    ).textContent =
+        money(total);
+
+
+    document.getElementById(
+        "paidAmount"
+    ).textContent =
+        money(paid);
+
+
+    document.getElementById(
+        "pendingAmount"
+    ).textContent =
+        money(pending);
+
+
+    document.getElementById(
+        "paymentPercentage"
+    ).textContent =
+        Math.round(
+            percentage
+        ) + "%";
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        percentage + "%";
+
+
+    document.getElementById(
+        "dueDate"
+    ).textContent =
+        data.dueDate ||
+        "—";
+
+
+    /* FEE BREAKDOWN */
+
+    document.getElementById(
+        "feeBreakdown"
+    ).innerHTML = `
+
+        <div class="table-wrapper">
+
+            <table class="fee-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Fee Type
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+                        <td>🎓 Tuition Fee</td>
+                        <td>${money(tuition)}</td>
+                    </tr>
+
+                    <tr>
+                        <td>🏠 Hostel Fee</td>
+                        <td>${money(hostel)}</td>
+                    </tr>
+
+                    <tr>
+                        <td>📝 Examination Fee</td>
+                        <td>${money(exam)}</td>
+                    </tr>
+
+                    <tr>
+                        <td>🚌 Transport Fee</td>
+                        <td>${money(transport)}</td>
+                    </tr>
+
+                    <tr>
+                        <td>📋 Other Charges</td>
+                        <td>${money(other)}</td>
+                    </tr>
+
+                    <tr class="fee-total">
+
+                        <td>
+                            Total Fee
+                        </td>
+
+                        <td>
+                            ${money(total)}
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+
+    /* PAYMENT STATUS */
+
+    let statusHTML;
+
+
+    if(pending <= 0){
+
+        statusHTML = `
+
+            <span class="status status-paid">
+                ✅ Fees Fully Paid
+            </span>
+
+            <p>
+                Your current fee payment is complete.
+            </p>
+
+        `;
+
+    }
+
+    else if(
+        data.status &&
+        String(data.status).toLowerCase()
+        === "overdue"
+    ){
+
+        statusHTML = `
+
+            <span class="status status-overdue">
+                ⚠️ Payment Overdue
+            </span>
+
+            <p>
+                Pending amount:
+                <strong>
+                    ${money(pending)}
+                </strong>
+            </p>
+
+        `;
+
+    }
+
+    else{
+
+        statusHTML = `
+
+            <span class="status status-pending">
+                ⏳ Payment Pending
+            </span>
+
+            <p>
+                Pending amount:
+                <strong>
+                    ${money(pending)}
+                </strong>
+            </p>
+
+        `;
+
+    }
+
+
+    document.getElementById(
+        "paymentStatus"
+    ).className = "";
+
+
+    document.getElementById(
+        "paymentStatus"
+    ).innerHTML =
+        statusHTML;
+
+
+    /* REMARKS */
+
+    if(data.remarks){
+
+        document.getElementById(
+            "remarksSection"
+        ).style.display =
+            "block";
+
+
+        document.getElementById(
+            "remarks"
+        ).textContent =
+            data.remarks;
+
+    }
+
+    else{
+
+        document.getElementById(
+            "remarksSection"
+        ).style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =========================
+   SUBMIT PAYMENT
+========================= */
+
+document.getElementById(
+    "paymentForm"
+).addEventListener(
+
+    "submit",
+
+    async function(event){
+
+        event.preventDefault();
+
+
+        if(!currentUser){
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        const amount =
+            number(
+                document.getElementById(
+                    "paymentAmount"
+                ).value
+            );
+
+
+        const method =
+            document.getElementById(
+                "paymentMethod"
+            ).value;
+
+
+        const transactionId =
+            document.getElementById(
+                "transactionId"
+            ).value.trim();
+
+
+        const paymentDate =
+            document.getElementById(
+                "paymentDate"
+            ).value;
+
+
+        if(amount <= 0){
+
+            alert(
+                "Please enter a valid payment amount."
+            );
+
+            return;
+
+        }
+
+
+        if(!method){
+
+            alert(
+                "Please select payment method."
+            );
+
+            return;
+
+        }
+
+
+        if(!transactionId){
+
+            alert(
+                "Please enter transaction ID."
+            );
+
+            return;
+
+        }
+
+
+        if(!paymentDate){
+
+            alert(
+                "Please select payment date."
+            );
+
+            return;
+
+        }
+
+
+        const submitBtn =
+            document.getElementById(
+                "submitPaymentBtn"
+            );
+
+
+        submitBtn.disabled = true;
+
+        submitBtn.textContent =
+            "Submitting...";
+
+
+        try{
+
+            const userRef =
+                doc(
+                    db,
+                    "users",
+                    currentUser.uid
+                );
+
+
+            const userSnapshot =
+                await getDoc(userRef);
+
+
+            const userData =
+                userSnapshot.exists()
+                ? userSnapshot.data()
+                : {};
+
+
+            const paymentRef =
+                collection(
+                    db,
+                    "fees",
+                    currentUser.uid,
+                    "paymentHistory"
+                );
+
+
+            await addDoc(
+
+                paymentRef,
+
+                {
+
+                    studentUid:
+                        currentUser.uid,
+
+                    studentName:
+                        userData.name ||
+                        "Student",
+
+                    studentEmail:
+                        currentUser.email ||
+                        "",
+
+                    amount:
+                        amount,
+
+                    paymentMethod:
+                        method,
+
+                    transactionId:
+                        transactionId,
+
+                    paymentDate:
+                        paymentDate,
+
+                    status:
+                        "Pending",
+
+                    submittedAt:
+                        serverTimestamp(),
+
+                    verifiedAt:
+                        null,
+
+                    verifiedBy:
+                        null,
+
+                    rejectionReason:
+                        ""
+
+                }
+
+            );
+
+
+            alert(
+                "✅ Payment submitted successfully! Admin verification pending."
+            );
+
+
+            document.getElementById(
+                "paymentForm"
+            ).reset();
+
+
+            setTodayDate();
+
+
+        }
+
+        catch(error){
+
+            console.error(
+                "Payment submit error:",
+                error
+            );
+
+
+            alert(
+                "Payment submission failed: " +
+                error.message
+            );
+
+        }
+
+
+        submitBtn.disabled = false;
+
+        submitBtn.textContent =
+            "💳 Submit Payment for Verification";
+
+    }
+
+);
+
+
+/* =========================
+   MY PAYMENT SUBMISSIONS
+========================= */
+
+function loadMyPayments(user){
+
+    const paymentsRef =
+        collection(
+            db,
+            "fees",
+            user.uid,
+            "paymentHistory"
+        );
+
+
+    const paymentsQuery =
+        query(
+            paymentsRef,
+            orderBy(
+                "submittedAt",
+                "desc"
+            )
+        );
+
+
+    if(unsubscribePayments){
+
+        unsubscribePayments();
+
+    }
+
+
+    unsubscribePayments =
+        onSnapshot(
+
+            paymentsQuery,
+
+            (snapshot) => {
+
+                const container =
+                    document.getElementById(
+                        "myPayments"
+                    );
+
+
+                if(snapshot.empty){
+
+                    container.innerHTML = `
+
+                        <div class="no-data">
+
+                            No payment submissions yet.
+
+                        </div>
+
+                    `;
+
+                    document.getElementById(
+                        "paymentHistory"
+                    ).innerHTML = `
+
+                        <div class="no-data">
+
+                            No verified payment history available.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                let submissions = "";
+
+                let verifiedRows = "";
+
+
+                snapshot.forEach(
+
+                    (paymentDoc) => {
+
+                        const data =
+                            paymentDoc.data();
+
+
+                        const status =
+                            String(
+                                data.status ||
+                                "Pending"
+                            );
+
+
+                        let statusClass =
+                            "status-pending";
+
+
+                        if(status === "Verified"){
+
+                            statusClass =
+                                "status-verified";
+
+                        }
+
+                        else if(status === "Rejected"){
+
+                            statusClass =
+                                "status-rejected";
+
+                        }
+
+
+                        submissions += `
+
+                            <div class="pending-payment
+                                ${
+                                    status === "Verified"
+                                    ? "verified-payment"
+                                    : status === "Rejected"
+                                    ? "rejected-payment"
+                                    : ""
+                                }">
+
+                                <strong>
+                                    ${money(
+                                        number(
+                                            data.amount
+                                        )
+                                    )}
+                                </strong>
+
+                                &nbsp; • &nbsp;
+
+                                ${escapeHTML(
+                                    data.paymentMethod ||
+                                    "—"
+                                )}
+
+                                <br><br>
+
+                                <span class="status ${statusClass}">
+
+                                    ${
+                                        status === "Verified"
+                                        ? "✅ Verified"
+                                        : status === "Rejected"
+                                        ? "❌ Rejected"
+                                        : "⏳ Pending Verification"
+                                    }
+
+                                </span>
+
+                                <br><br>
+
+                                <span class="small-text">
+
+                                    Transaction ID:
+
+                                </span>
+
+                                <span class="transaction-id">
+
+                                    ${escapeHTML(
+                                        data.transactionId ||
+                                        paymentDoc.id
+                                    )}
+
+                                </span>
+
+                                <br>
+
+                                <span class="small-text">
+
+                                    Payment Date:
+                                    ${escapeHTML(
+                                        data.paymentDate ||
+                                        "—"
+                                    )}
+
+                                </span>
+
+
+                                ${
+                                    data.rejectionReason
+                                    ? `
+
+                                        <br><br>
+
+                                        <strong>
+                                            Rejection Reason:
+                                        </strong>
+
+                                        ${escapeHTML(
+                                            data.rejectionReason
+                                        )}
+
+                                    `
+                                    : ""
+                                }
+
+                            </div>
+
+                        `;
+
+
+                        /* ONLY VERIFIED PAYMENTS */
+
+                        if(status === "Verified"){
+
+                            verifiedRows += `
+
+                                <tr>
+
+                                    <td>
+
+                                        ${escapeHTML(
+                                            data.paymentDate ||
+                                            "—"
+                                        )}
+
+                                    </td>
+
+                                    <td>
+
+                                        ${escapeHTML(
+                                            data.paymentMethod ||
+                                            "—"
+                                        )}
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="transaction-id">
+
+                                            ${escapeHTML(
+                                                data.transactionId ||
+                                                paymentDoc.id
+                                            )}
+
+                                        </span>
+
+                                    </td>
+
+                                    <td>
+
+                                        <strong>
+
+                                            ${money(
+                                                number(
+                                                    data.amount
+                                                )
+                                            )}
+
+                                        </strong>
+
+                                    </td>
+
+                                    <td>
+
+                                        <span class="status status-verified">
+
+                                            ✅ Verified
+
+                                        </span>
+
+                                    </td>
+
+                                </tr>
+
+                            `;
+
+                        }
+
+                    }
+
+                );
+
+
+                container.innerHTML =
+                    submissions;
+
+
+                if(!verifiedRows){
+
+                    document.getElementById(
+                        "paymentHistory"
+                    ).innerHTML = `
+
+                        <div class="no-data">
+
+                            No verified payment history available yet.
+
+                            <br><br>
+
+                            Payments will appear here after admin verification.
+
+                        </div>
+
+                    `;
+
+                }
+
+                else{
+
+                    document.getElementById(
+                        "paymentHistory"
+                    ).innerHTML = `
+
+                        <div class="table-wrapper">
+
+                            <table class="history-table">
+
+                                <thead>
+
+                                    <tr>
+
+                                        <th>
+                                            Date
+                                        </th>
+
+                                        <th>
+                                            Payment Mode
+                                        </th>
+
+                                        <th>
+                                            Transaction ID
+                                        </th>
+
+                                        <th>
+                                            Amount
+                                        </th>
+
+                                        <th>
+                                            Status
+                                        </th>
+
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    ${verifiedRows}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    `;
+
+                }
+
+            },
+
+            (error) => {
+
+                console.error(
+                    "Payment submission error:",
+                    error
+                );
+
+
+                document.getElementById(
+                    "myPayments"
+                ).innerHTML = `
+
+                    <div class="error">
+
+                        Unable to load payment submissions.
+
+                        <br><br>
+
+                        ${escapeHTML(
+                            error.message
+                        )}
+
+                    </div>
+
+                `;
+
+            }
+
+        );
+
+}
+
+
+/* =========================
+   NO FEES
+========================= */
+
+function showNoFees(){
+
+    document.getElementById(
+        "totalFee"
+    ).textContent =
+        "₹0";
+
+
+    document.getElementById(
+        "paidAmount"
+    ).textContent =
+        "₹0";
+
+
+    document.getElementById(
+        "pendingAmount"
+    ).textContent =
+        "₹0";
+
+
+    document.getElementById(
+        "dueDate"
+    ).textContent =
+        "—";
+
+
+    document.getElementById(
+        "paymentPercentage"
+    ).textContent =
+        "0%";
+
+
+    document.getElementById(
+        "progressFill"
+    ).style.width =
+        "0%";
+
+
+    document.getElementById(
+        "feeBreakdown"
+    ).innerHTML = `
+
+        <div class="no-data">
+
+            <h3>
+                No Fee Information Available
+            </h3>
+
+            <p>
+                The college has not added your fee details yet.
+            </p>
+
+        </div>
+
+    `;
+
+
+    document.getElementById(
+        "paymentStatus"
+    ).innerHTML = `
+
+        <span class="status status-pending">
+
+            Fee Details Pending
+
+        </span>
+
+        <p>
+            Please contact the college accounts office.
+        </p>
+
+    `;
+
+
+    document.getElementById(
+        "paymentHistory"
+    ).innerHTML = `
+
+        <div class="no-data">
+
+            No verified payment history available.
+
+        </div>
+
+    `;
+
+}
+
+
+/* =========================
+   TODAY DATE
+========================= */
+
+function setTodayDate(){
+
+    const input =
+        document.getElementById(
+            "paymentDate"
+        );
+
+
+    if(!input.value){
+
+        const today =
+            new Date();
+
+
+        const year =
+            today.getFullYear();
+
+
+        const month =
+            String(
+                today.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const day =
+            String(
+                today.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        input.value =
+            `${year}-${month}-${day}`;
+
+    }
+
+}
+
+
+/* =========================
+   HELPERS
+========================= */
+
+function number(value){
+
+    const n =
+        Number(value);
+
+
+    return Number.isFinite(n)
+        ? n
+        : 0;
+
+}
+
+
+function money(value){
+
+    return "₹" +
+        Number(value || 0)
+        .toLocaleString(
+            "en-IN"
+        );
+
+}
+
+
+function escapeHTML(value){
+
+    return String(
+        value || ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+window.logoutUser =
+    async function(){
+
+        try{
+
+            await signOut(
+                auth
+            );
+
+
+            localStorage.removeItem(
+                "currentUser"
+            );
+
+
+            window.location.href =
+                "index.html";
+
+        }
+
+        catch(error){
+
+            alert(
+                "Logout failed: " +
+                error.message
+            );
+
+        }
+
+    };
+
+</script>
+
+</body>
+
+</html>

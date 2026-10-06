@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CampusConnect | Login</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #eef3ff, #ffffff);
+        }
+
+        .login-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+        }
+
+        .login-wrapper {
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(23, 32, 51, 0.12);
+        }
+
+        .login-info {
+            padding: 55px;
+            background: linear-gradient(145deg, #315efb, #6c63ff);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .brand {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 35px;
+        }
+
+        .login-info h1 {
+            font-size: 42px;
+            line-height: 1.15;
+            margin-bottom: 18px;
+        }
+
+        .login-info h1 span {
+            color: #dce4ff;
+        }
+
+        .login-info p {
+            font-size: 15px;
+            line-height: 1.7;
+            opacity: 0.9;
+            margin-bottom: 28px;
+        }
+
+        .feature-list {
+            display: grid;
+            gap: 13px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .feature-icon {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+            background: rgba(255,255,255,0.18);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-form {
+            padding: 55px 45px;
+        }
+
+        .login-form h2 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .login-subtitle {
+            color: #78839a;
+            font-size: 14px;
+            margin-bottom: 28px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-size: 15px;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 11px;
+            background: #315efb;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .login-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .register-text {
+            text-align: center;
+            margin-top: 22px;
+            font-size: 14px;
+            color: #78839a;
+        }
+
+        .register-text a {
+            color: #315efb;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .demo-box {
+            margin-top: 20px;
+            padding: 12px;
+            background: #f5f7ff;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #667085;
+        }
+
+        .admin-button {
+            display: block;
+            width: 100%;
+            padding: 13px;
+            margin-top: 15px;
+            text-align: center;
+            background: #172033;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        @media (max-width: 750px) {
+            .login-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .login-info {
+                padding: 35px 30px;
+            }
+
+            .login-info h1 {
+                font-size: 32px;
+            }
+
+            .login-form {
+                padding: 35px 30px;
+            }
+        }
+
+        @media (max-width: 450px) {
+            .login-page {
+                padding: 12px;
+            }
+
+            .login-info {
+                padding: 30px 22px;
+            }
+
+            .login-form {
+                padding: 30px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-page">
+
+    <div class="login-wrapper">
+
+        <!-- LEFT SIDE -->
+        <div class="login-info">
+
+            <div class="brand">
+                CampusConnect
+            </div>
+
+            <h1>
+                One Platform for
+                <span>Campus Life</span>
+            </h1>
+
+            <p>
+                Connect students and administrators with
+                everyday campus services in one simple platform.
+            </p>
+
+            <div class="feature-list">
+
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <span>Attendance & Timetable</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">📝</div>
+                    <span>Leave & Gate Pass</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🏠</div>
+                    <span>Hostel & Mess Services</span>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">💰</div>
+                    <span>Fees & Notices</span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RIGHT SIDE -->
+        <div class="login-form">
+
+            <h2>Welcome Back 👋</h2>
+
+            <p class="login-subtitle">
+                Login to your CampusConnect account
+            </p>
+
+            <form id="loginForm">
+
+                <label for="email">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    required
+                >
+
+                <label for="password">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="login-button"
+                    id="loginButton"
+                >
+                    Login to CampusConnect →
+                </button>
+
+            </form>
+
+
+            <p class="register-text">
+                Don't have an account?
+                <a href="register.html">
+                    Create Account
+                </a>
+            </p>
+
+
+            <div class="demo-box">
+
+                <strong>Admin Login</strong><br>
+
+                Login as Campus Administrator
+
+                <a href="admin.html" class="admin-button">
+                    👨‍💼 Admin Login
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Firebase Login -->
+<script type="module">
+
+    import { auth } from "./firebase-config.js";
+
+    import {
+        signInWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+
+    const loginForm = document.getElementById("loginForm");
+
+    const loginButton = document.getElementById("loginButton");
+
+
+    loginForm.addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+
+        const email =
+            document.getElementById("email").value.trim();
+
+        const password =
+            document.getElementById("password").value;
+
+
+        loginButton.disabled = true;
+
+        loginButton.textContent = "Logging in...";
+
+
+        try {
+
+            const userCredential =
+                await signInWithEmailAndPassword(
+                    auth,
+                    email,
+                    password
+                );
+
+
+            const user = userCredential.user;
+
+
+            localStorage.setItem(
+                "currentUser",
+                JSON.stringify({
+                    uid: user.uid,
+                    email: user.email,
+                    role: "student"
+                })
+            );
+
+
+            window.location.href = "dashboard.html";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Login failed: " +
+                error.code +
+                "\n\n" +
+                error.message
+            );
+
+
+            loginButton.disabled = false;
+
+            loginButton.textContent =
+                "Login to CampusConnect →";
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

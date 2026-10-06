@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gate Pass - CampusConnect</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        Campus<span>Connect</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="requests.html">My Requests</a>
+
+        <button onclick="logoutUser()" class="btn btn-danger">
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<main class="container page">
+
+    <section class="page-header">
+
+        <div>
+
+            <p class="eyebrow">
+                CAMPUS SECURITY
+            </p>
+
+            <h1>Gate Pass</h1>
+
+            <p>
+                Apply for permission to leave and return to campus.
+            </p>
+
+        </div>
+
+        <a href="services.html" class="btn btn-secondary">
+            ← Services
+        </a>
+
+    </section>
+
+
+    <section class="grid-2">
+
+        <!-- FORM -->
+
+        <div class="card">
+
+            <p class="eyebrow">
+                APPLY FOR GATE PASS
+            </p>
+
+            <h2>Pass Details</h2>
+
+            <form id="gatePassForm">
+
+                <div class="form-group">
+
+                    <label>Pass Type</label>
+
+                    <select id="passType" required>
+
+                        <option value="">
+                            Select Pass Type
+                        </option>
+
+                        <option value="Day Out">
+                            Day Out
+                        </option>
+
+                        <option value="Medical">
+                            Medical
+                        </option>
+
+                        <option value="Emergency">
+                            Emergency
+                        </option>
+
+                        <option value="Personal">
+                            Personal
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Destination</label>
+
+                    <input
+                        type="text"
+                        id="destination"
+                        placeholder="Example: Hospital / Home / Market"
+                        required>
+
+                </div>
+
+
+                <div class="grid-2">
+
+                    <div class="form-group">
+
+                        <label>Departure Date</label>
+
+                        <input
+                            type="date"
+                            id="departureDate"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Departure Time</label>
+
+                        <input
+                            type="time"
+                            id="departureTime"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="grid-2">
+
+                    <div class="form-group">
+
+                        <label>Expected Return Date</label>
+
+                        <input
+                            type="date"
+                            id="returnDate"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label>Expected Return Time</label>
+
+                        <input
+                            type="time"
+                            id="returnTime"
+                            required>
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Reason</label>
+
+                    <textarea
+                        id="reason"
+                        rows="5"
+                        placeholder="Enter reason for leaving campus..."
+                        required></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="btn btn-primary">
+
+                    🚪 Submit Gate Pass
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div>
+
+            <div class="card">
+
+                <p class="eyebrow">
+                    GATE PASS PROCESS
+                </p>
+
+                <h2>How It Works</h2>
+
+                <div class="process-list">
+
+                    <div class="process-item">
+
+                        <strong>1. Apply</strong>
+
+                        <p>
+                            Enter your destination,
+                            departure and return details.
+                        </p>
+
+                    </div>
+
+
+                    <div class="process-item">
+
+                        <strong>2. Review</strong>
+
+                        <p>
+                            The administrator checks
+                            your gate pass request.
+                        </p>
+
+                    </div>
+
+
+                    <div class="process-item">
+
+                        <strong>3. Approval</strong>
+
+                        <p>
+                            Once approved, you can use
+                            the gate pass as permitted.
+                        </p>
+
+                    </div>
+
+
+                    <div class="process-item">
+
+                        <strong>4. Track</strong>
+
+                        <p>
+                            Track the request status
+                            from My Requests.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <p class="eyebrow">
+                    QUICK LINKS
+                </p>
+
+                <div class="quick-links">
+
+                    <a
+                        href="requests.html"
+                        class="btn btn-secondary">
+
+                        📋 My Requests
+
+                    </a>
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-secondary">
+
+                        🏠 Dashboard
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <p>
+        © 2026 CampusConnect •
+        One Platform •
+        All Campus Services
+    </p>
+
+</footer>
+
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    collection,
+    addDoc,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+let firebaseUser = null;
+let studentName = "Student";
+
+
+/* ================================
+   CHECK LOGIN
+================================ */
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+        alert("Please login first.");
+
+        window.location.href = "index.html";
+
+        return;
+
+    }
+
+    firebaseUser = user;
+
+
+    /* GET STUDENT PROFILE */
+
+    try {
+
+        const userDoc = await getDoc(
+            doc(db, "users", user.uid)
+        );
+
+
+        if (userDoc.exists()) {
+
+            const data = userDoc.data();
+
+            studentName =
+                data.name ||
+                user.displayName ||
+                "Student";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Profile loading error:",
+            error
+        );
+
+    }
+
+});
+
+
+/* ================================
+   LOGOUT
+================================ */
+
+window.logoutUser = async function () {
+
+    try {
+
+        await signOut(auth);
+
+        localStorage.removeItem("currentUser");
+
+        window.location.href = "index.html";
+
+    } catch (error) {
+
+        alert(
+            "Logout failed: " +
+            error.message
+        );
+
+    }
+
+};
+
+
+/* ================================
+   SUBMIT GATE PASS
+================================ */
+
+document
+    .getElementById("gatePassForm")
+    .addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+
+        if (!firebaseUser) {
+
+            alert("Please login first.");
+
+            window.location.href = "index.html";
+
+            return;
+
+        }
+
+
+        const passType =
+            document.getElementById(
+                "passType"
+            ).value;
+
+
+        const destination =
+            document.getElementById(
+                "destination"
+            ).value.trim();
+
+
+        const departureDate =
+            document.getElementById(
+                "departureDate"
+            ).value;
+
+
+        const departureTime =
+            document.getElementById(
+                "departureTime"
+            ).value;
+
+
+        const returnDate =
+            document.getElementById(
+                "returnDate"
+            ).value;
+
+
+        const returnTime =
+            document.getElementById(
+                "returnTime"
+            ).value;
+
+
+        const reason =
+            document.getElementById(
+                "reason"
+            ).value.trim();
+
+
+        /* ================================
+           VALIDATION
+        ================================= */
+
+        if (
+            !passType ||
+            !destination ||
+            !departureDate ||
+            !departureTime ||
+            !returnDate ||
+            !returnTime ||
+            !reason
+        ) {
+
+            alert("Please fill all fields.");
+
+            return;
+
+        }
+
+
+        /* RETURN DATE VALIDATION */
+
+        if (
+            new Date(returnDate) <
+            new Date(departureDate)
+        ) {
+
+            alert(
+                "Return Date cannot be before Departure Date."
+            );
+
+            return;
+
+        }
+
+
+        /* SAME DATE + TIME VALIDATION */
+
+        if (
+            departureDate === returnDate &&
+            returnTime <= departureTime
+        ) {
+
+            alert(
+                "Return time must be after departure time."
+            );
+
+            return;
+
+        }
+
+
+        const submitBtn =
+            document.getElementById(
+                "submitBtn"
+            );
+
+
+        submitBtn.disabled = true;
+
+        submitBtn.innerText =
+            "Submitting...";
+
+
+        try {
+
+
+            /* ================================
+               FIREBASE REQUEST DATA
+            ================================= */
+
+            const requestData = {
+
+                type: "Gate Pass",
+
+                title:
+                    passType +
+                    " - " +
+                    destination,
+
+                category:
+                    passType,
+
+                date:
+                    departureDate +
+                    " " +
+                    departureTime +
+                    " → " +
+                    returnDate +
+                    " " +
+                    returnTime,
+
+                description:
+                    "Pass Type: " +
+                    passType +
+                    " | Destination: " +
+                    destination +
+                    " | Departure: " +
+                    departureDate +
+                    " " +
+                    departureTime +
+                    " | Return: " +
+                    returnDate +
+                    " " +
+                    returnTime +
+                    " | Reason: " +
+                    reason,
+
+                passType:
+                    passType,
+
+                destination:
+                    destination,
+
+                departureDate:
+                    departureDate,
+
+                departureTime:
+                    departureTime,
+
+                returnDate:
+                    returnDate,
+
+                returnTime:
+                    returnTime,
+
+                reason:
+                    reason,
+
+                studentUid:
+                    firebaseUser.uid,
+
+                studentEmail:
+                    firebaseUser.email || "",
+
+                studentName:
+                    studentName,
+
+                status:
+                    "Pending",
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            /* ================================
+               SAVE TO FIRESTORE
+            ================================= */
+
+            const requestRef =
+                await addDoc(
+                    collection(db, "requests"),
+                    requestData
+                );
+
+
+            console.log(
+                "Gate Pass Request ID:",
+                requestRef.id
+            );
+
+
+            alert(
+                "✅ Gate Pass submitted successfully!"
+            );
+
+
+            window.location.href =
+                "requests.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "Gate Pass Error:",
+                error
+            );
+
+
+            alert(
+                "❌ Gate Pass submit failed.\n\n" +
+                error.message
+            );
+
+
+            submitBtn.disabled = false;
+
+            submitBtn.innerText =
+                "🚪 Submit Gate Pass";
+
+        }
+
+    });
+
+</script>
+
+
+<style>
+
+.process-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 15px;
+
+    margin-top: 20px;
+
+}
+
+
+.process-item {
+
+    padding: 16px;
+
+    background: #f8fafc;
+
+    border-radius: 12px;
+
+}
+
+
+.process-item strong {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+}
+
+
+.process-item p {
+
+    margin: 0;
+
+    color: #667085;
+
+    line-height: 1.5;
+
+}
+
+
+.quick-links {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: 15px;
+
+}
+
+
+@media (max-width: 600px) {
+
+    .quick-links .btn {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+
+</body>
+
+</html>

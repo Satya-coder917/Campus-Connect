@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Other Request - CampusConnect</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Campus<span>Connect</span></div>
+
+    <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="requests.html">My Requests</a>
+        <button onclick="logoutUser()" class="btn btn-danger">Logout</button>
+    </div>
+</nav>
+
+<main class="container">
+
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">CAMPUS SERVICE</p>
+            <h1>📝 Other Request</h1>
+            <p>Submit any campus-related request that is not listed above.</p>
+        </div>
+    </section>
+
+    <section class="grid-2">
+
+        <div class="card">
+
+            <h2>Submit Your Request</h2>
+
+            <p class="muted">
+                Provide the details of your request below.
+            </p>
+
+            <form id="otherForm">
+
+                <label>Request Category</label>
+
+                <select id="otherCategory" required>
+                    <option value="">Select category</option>
+                    <option>Academic</option>
+                    <option>Library</option>
+                    <option>Transport</option>
+                    <option>IT / Internet</option>
+                    <option>Campus Facility</option>
+                    <option>Student Support</option>
+                    <option>Other</option>
+                </select>
+
+                <label>Request Title</label>
+
+                <input
+                    type="text"
+                    id="otherTitle"
+                    placeholder="Example: Wi-Fi Issue"
+                    required
+                >
+
+                <label>Preferred Date</label>
+
+                <input
+                    type="date"
+                    id="otherDate"
+                    required
+                >
+
+                <label>Request Details</label>
+
+                <textarea
+                    id="otherDetails"
+                    rows="6"
+                    placeholder="Explain your request clearly..."
+                    required
+                ></textarea>
+
+                <button type="submit" class="btn btn-primary">
+                    Submit Request
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>📌 Before You Submit</h2>
+
+            <div class="info-box">
+                <strong>1️⃣ Choose a Category</strong>
+                <p>Select the category that best matches your request.</p>
+            </div>
+
+            <div class="info-box">
+                <strong>2️⃣ Give Clear Details</strong>
+                <p>Write enough information so the administrator can understand the issue.</p>
+            </div>
+
+            <div class="info-box">
+                <strong>3️⃣ Track Your Request</strong>
+                <p>Your request can be tracked from My Requests.</p>
+            </div>
+
+            <div class="info-box">
+                <strong>4️⃣ Administrator Review</strong>
+                <p>The administrator can approve or reject the request.</p>
+            </div>
+
+            <a href="requests.html" class="btn btn-secondary">
+                View My Requests
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>CampusConnect • One Platform • All Campus Services</p>
+</footer>
+
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    collection,
+    addDoc,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+let firebaseUser = null;
+let studentName = "Student";
+
+
+// ===============================
+// CHECK LOGIN
+// ===============================
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+        alert("Please login first.");
+
+        window.location.href = "index.html";
+
+        return;
+    }
+
+    firebaseUser = user;
+
+    // Get student profile
+    try {
+
+        const userDoc = await getDoc(
+            doc(db, "users", user.uid)
+        );
+
+        if (userDoc.exists()) {
+
+            const data = userDoc.data();
+
+            studentName = data.name || "Student";
+
+        } else {
+
+            studentName = user.displayName || "Student";
+        }
+
+    } catch (error) {
+
+        console.error("Profile error:", error);
+
+        studentName = user.displayName || "Student";
+    }
+
+});
+
+
+// ===============================
+// SUBMIT OTHER REQUEST
+// ===============================
+
+document
+    .getElementById("otherForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (!firebaseUser) {
+
+            alert("Please login first.");
+
+            window.location.href = "index.html";
+
+            return;
+        }
+
+
+        const category =
+            document.getElementById("otherCategory").value;
+
+        const title =
+            document.getElementById("otherTitle").value.trim();
+
+        const date =
+            document.getElementById("otherDate").value;
+
+        const details =
+            document.getElementById("otherDetails").value.trim();
+
+
+        // ===============================
+        // VALIDATION
+        // ===============================
+
+        if (!category || !title || !date || !details) {
+
+            alert("Please fill all fields.");
+
+            return;
+        }
+
+
+        // ===============================
+        // FIRESTORE DATA
+        // ===============================
+
+        const requestData = {
+
+            type: "Other Request",
+
+            title: title,
+
+            service: "Other Request",
+
+            category: category,
+
+            date: date,
+
+            details: details,
+
+            description:
+                "Category: " + category +
+                " | Request: " + title +
+                " | Details: " + details,
+
+            studentUid: firebaseUser.uid,
+
+            studentName: studentName,
+
+            studentEmail: firebaseUser.email || "",
+
+            status: "Pending",
+
+            createdAt: new Date().toISOString()
+
+        };
+
+
+        try {
+
+            // Save request to Firebase
+            await addDoc(
+                collection(db, "requests"),
+                requestData
+            );
+
+
+            alert(
+                "Request submitted successfully!"
+            );
+
+
+            // Open My Requests
+            window.location.href = "requests.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "Other request error:",
+                error
+            );
+
+            alert(
+                "Failed to submit request.\n\n" +
+                error.message
+            );
+
+        }
+
+    });
+
+
+// ===============================
+// LOGOUT
+// ===============================
+
+window.logoutUser = async function() {
+
+    try {
+
+        await signOut(auth);
+
+        localStorage.removeItem("currentUser");
+
+        window.location.href = "index.html";
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+        alert("Logout failed.");
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>

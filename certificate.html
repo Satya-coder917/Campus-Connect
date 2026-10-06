@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Certificate Request - CampusConnect</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        Campus<span>Connect</span>
+    </div>
+
+    <div class="nav-links">
+
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="requests.html">My Requests</a>
+
+        <button
+            onclick="logoutUser()"
+            class="btn btn-danger">
+            Logout
+        </button>
+
+    </div>
+
+</nav>
+
+
+<main class="container page">
+
+    <section class="page-header">
+
+        <div>
+
+            <p class="eyebrow">
+                STUDENT DOCUMENT SERVICES
+            </p>
+
+            <h1>
+                Certificate Request
+            </h1>
+
+            <p>
+                Request your required college certificate online.
+            </p>
+
+        </div>
+
+        <a
+            href="services.html"
+            class="btn btn-secondary">
+
+            ← Services
+
+        </a>
+
+    </section>
+
+
+    <section class="grid-2">
+
+
+        <!-- CERTIFICATE FORM -->
+
+        <div class="card">
+
+            <p class="eyebrow">
+                NEW REQUEST
+            </p>
+
+            <h2>
+                Certificate Details
+            </h2>
+
+
+            <form id="certificateForm">
+
+
+                <div class="form-group">
+
+                    <label>
+                        Certificate Type
+                    </label>
+
+                    <select
+                        id="certificateType"
+                        required>
+
+                        <option value="">
+                            Select Certificate
+                        </option>
+
+                        <option value="Bonafide Certificate">
+                            Bonafide Certificate
+                        </option>
+
+                        <option value="Character Certificate">
+                            Character Certificate
+                        </option>
+
+                        <option value="Study Certificate">
+                            Study Certificate
+                        </option>
+
+                        <option value="Transfer Certificate">
+                            Transfer Certificate
+                        </option>
+
+                        <option value="Course Completion Certificate">
+                            Course Completion Certificate
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Required Date
+                    </label>
+
+                    <input
+                        type="date"
+                        id="requiredDate"
+                        required>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>
+                        Purpose
+                    </label>
+
+                    <textarea
+                        id="purpose"
+                        rows="6"
+                        placeholder="Why do you need this certificate?"
+                        required></textarea>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    id="submitBtn"
+                    class="btn btn-primary">
+
+                    🎓 Submit Certificate Request
+
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- INFORMATION -->
+
+        <div>
+
+            <div class="card">
+
+                <p class="eyebrow">
+                    AVAILABLE CERTIFICATES
+                </p>
+
+                <h2>
+                    Certificate Types
+                </h2>
+
+
+                <div class="certificate-list">
+
+                    <div class="certificate-item">
+
+                        <strong>
+                            📄 Bonafide
+                        </strong>
+
+                        <p>
+                            Proof that you are a student
+                            of the institution.
+                        </p>
+
+                    </div>
+
+
+                    <div class="certificate-item">
+
+                        <strong>
+                            🏅 Character
+                        </strong>
+
+                        <p>
+                            Certificate related to
+                            student conduct.
+                        </p>
+
+                    </div>
+
+
+                    <div class="certificate-item">
+
+                        <strong>
+                            📚 Study
+                        </strong>
+
+                        <p>
+                            Official proof of your
+                            current studies.
+                        </p>
+
+                    </div>
+
+
+                    <div class="certificate-item">
+
+                        <strong>
+                            🔄 Transfer
+                        </strong>
+
+                        <p>
+                            Request a transfer certificate
+                            through the portal.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="card">
+
+                <p class="eyebrow">
+                    QUICK LINKS
+                </p>
+
+                <div class="quick-links">
+
+                    <a
+                        href="requests.html"
+                        class="btn btn-secondary">
+
+                        📋 My Requests
+
+                    </a>
+
+                    <a
+                        href="dashboard.html"
+                        class="btn btn-secondary">
+
+                        🏠 Dashboard
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<footer class="footer">
+
+    <p>
+        © 2026 CampusConnect •
+        One Platform •
+        All Campus Services
+    </p>
+
+</footer>
+
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    collection,
+    addDoc,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+let firebaseUser = null;
+let studentName = "Student";
+
+
+/* =================================
+   CHECK LOGIN
+================================= */
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+        alert("Please login first.");
+
+        window.location.href = "index.html";
+
+        return;
+
+    }
+
+    firebaseUser = user;
+
+
+    /* GET STUDENT PROFILE */
+
+    try {
+
+        const userDoc = await getDoc(
+            doc(db, "users", user.uid)
+        );
+
+
+        if (userDoc.exists()) {
+
+            const data = userDoc.data();
+
+            studentName =
+                data.name ||
+                user.displayName ||
+                "Student";
+
+        }
+
+    } catch (error) {
+
+        console.log(
+            "Profile loading error:",
+            error
+        );
+
+    }
+
+});
+
+
+/* =================================
+   LOGOUT
+================================= */
+
+window.logoutUser = async function () {
+
+    try {
+
+        await signOut(auth);
+
+        localStorage.removeItem("currentUser");
+
+        window.location.href = "index.html";
+
+    } catch (error) {
+
+        alert(
+            "Logout failed: " +
+            error.message
+        );
+
+    }
+
+};
+
+
+/* =================================
+   SUBMIT CERTIFICATE REQUEST
+================================= */
+
+document
+    .getElementById("certificateForm")
+    .addEventListener("submit", async function (event) {
+
+        event.preventDefault();
+
+
+        if (!firebaseUser) {
+
+            alert("Please login first.");
+
+            window.location.href = "index.html";
+
+            return;
+
+        }
+
+
+        const certificateType =
+            document.getElementById(
+                "certificateType"
+            ).value;
+
+
+        const requiredDate =
+            document.getElementById(
+                "requiredDate"
+            ).value;
+
+
+        const purpose =
+            document.getElementById(
+                "purpose"
+            ).value.trim();
+
+
+        /* VALIDATION */
+
+        if (
+            !certificateType ||
+            !requiredDate ||
+            !purpose
+        ) {
+
+            alert("Please fill all fields.");
+
+            return;
+
+        }
+
+
+        const submitBtn =
+            document.getElementById(
+                "submitBtn"
+            );
+
+
+        submitBtn.disabled = true;
+
+        submitBtn.innerText =
+            "Submitting...";
+
+
+        try {
+
+
+            /* =================================
+               FIREBASE REQUEST DATA
+            ================================= */
+
+            const requestData = {
+
+                type:
+                    "Certificate Request",
+
+                title:
+                    certificateType,
+
+                category:
+                    certificateType,
+
+                date:
+                    requiredDate,
+
+                description:
+                    "Certificate: " +
+                    certificateType +
+                    " | Required Date: " +
+                    requiredDate +
+                    " | Purpose: " +
+                    purpose,
+
+                certificateType:
+                    certificateType,
+
+                requiredDate:
+                    requiredDate,
+
+                purpose:
+                    purpose,
+
+                studentUid:
+                    firebaseUser.uid,
+
+                studentEmail:
+                    firebaseUser.email || "",
+
+                studentName:
+                    studentName,
+
+                status:
+                    "Pending",
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            /* =================================
+               SAVE TO FIRESTORE
+            ================================= */
+
+            const requestRef =
+                await addDoc(
+                    collection(db, "requests"),
+                    requestData
+                );
+
+
+            console.log(
+                "Certificate Request ID:",
+                requestRef.id
+            );
+
+
+            alert(
+                "✅ Certificate request submitted successfully!"
+            );
+
+
+            window.location.href =
+                "requests.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "Certificate Request Error:",
+                error
+            );
+
+
+            alert(
+                "❌ Certificate request failed.\n\n" +
+                error.message
+            );
+
+
+            submitBtn.disabled = false;
+
+            submitBtn.innerText =
+                "🎓 Submit Certificate Request";
+
+        }
+
+    });
+
+</script>
+
+
+<style>
+
+.certificate-list {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 14px;
+
+    margin-top: 20px;
+
+}
+
+
+.certificate-item {
+
+    padding: 16px;
+
+    background: #f8fafc;
+
+    border-radius: 12px;
+
+}
+
+
+.certificate-item strong {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+}
+
+
+.certificate-item p {
+
+    margin: 0;
+
+    color: #667085;
+
+    line-height: 1.5;
+
+}
+
+
+.quick-links {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 12px;
+
+    margin-top: 15px;
+
+}
+
+
+@media (max-width: 600px) {
+
+    .quick-links .btn {
+
+        width: 100%;
+
+    }
+
+}
+
+</style>
+
+
+</body>
+
+</html>

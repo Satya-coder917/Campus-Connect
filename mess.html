@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mess Service - CampusConnect</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<nav class="navbar">
+    <div class="logo">Campus<span>Connect</span></div>
+
+    <div class="nav-links">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="services.html">Services</a>
+        <a href="requests.html">My Requests</a>
+        <button onclick="logoutUser()" class="btn btn-danger">Logout</button>
+    </div>
+</nav>
+
+<main class="container">
+
+    <section class="page-header">
+        <div>
+            <p class="eyebrow">CAMPUS SERVICE</p>
+            <h1>🍽️ Mess Service</h1>
+            <p>Submit your mess-related request or complaint.</p>
+        </div>
+    </section>
+
+    <section class="grid-2">
+
+        <!-- FORM -->
+        <div class="card">
+
+            <h2>Submit Mess Request</h2>
+
+            <p class="muted">
+                Fill in the details below and submit your request.
+            </p>
+
+            <form id="messForm">
+
+                <label>Request Type</label>
+
+                <select id="messType" required>
+                    <option value="">Select request type</option>
+                    <option>Food Quality Complaint</option>
+                    <option>Food Timing Issue</option>
+                    <option>Menu Change Request</option>
+                    <option>Mess Hygiene Complaint</option>
+                    <option>Meal Booking</option>
+                    <option>Other</option>
+                </select>
+
+                <label>Mess / Hostel</label>
+
+                <input
+                    type="text"
+                    id="messName"
+                    placeholder="Example: Main Hostel Mess"
+                    required
+                >
+
+                <label>Date</label>
+
+                <input
+                    type="date"
+                    id="messDate"
+                    required
+                >
+
+                <label>Details</label>
+
+                <textarea
+                    id="messDetails"
+                    rows="5"
+                    placeholder="Describe your mess request or complaint..."
+                    required
+                ></textarea>
+
+                <button type="submit" class="btn btn-primary">
+                    Submit Request
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- INFO -->
+        <div class="card">
+
+            <h2>Mess Service Information</h2>
+
+            <div class="info-box">
+                <strong>🍛 Meal Services</strong>
+                <p>
+                    Breakfast, lunch and dinner services are managed
+                    through the campus mess.
+                </p>
+            </div>
+
+            <div class="info-box">
+                <strong>🧹 Hygiene</strong>
+                <p>
+                    Report cleanliness or hygiene issues to the administration.
+                </p>
+            </div>
+
+            <div class="info-box">
+                <strong>⏰ Timing Issues</strong>
+                <p>
+                    Report problems related to meal timings or availability.
+                </p>
+            </div>
+
+            <div class="info-box">
+                <strong>📋 Request Tracking</strong>
+                <p>
+                    After submission, you can track your request from
+                    <b>My Requests</b>.
+                </p>
+            </div>
+
+            <a href="requests.html" class="btn btn-secondary">
+                View My Requests
+            </a>
+
+        </div>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    <p>CampusConnect • One Platform • All Campus Services</p>
+</footer>
+
+
+<!-- Firebase + JavaScript -->
+
+<script type="module">
+
+import { auth, db } from "./firebase-config.js";
+
+import {
+    onAuthStateChanged,
+    signOut
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+
+import {
+    collection,
+    addDoc,
+    doc,
+    getDoc
+} from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+let firebaseUser = null;
+let studentName = "Student";
+
+
+// ===============================
+// CHECK LOGIN
+// ===============================
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+        alert("Please login first.");
+
+        window.location.href = "index.html";
+
+        return;
+    }
+
+    firebaseUser = user;
+
+    // Get student profile from Firestore
+    try {
+
+        const userDoc = await getDoc(
+            doc(db, "users", user.uid)
+        );
+
+        if (userDoc.exists()) {
+
+            const data = userDoc.data();
+
+            studentName = data.name || "Student";
+
+        } else {
+
+            studentName = user.displayName || "Student";
+        }
+
+    } catch (error) {
+
+        console.error("Profile error:", error);
+
+        studentName = user.displayName || "Student";
+    }
+
+});
+
+
+// ===============================
+// SUBMIT MESS REQUEST
+// ===============================
+
+document
+    .getElementById("messForm")
+    .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        if (!firebaseUser) {
+
+            alert("Please login first.");
+
+            window.location.href = "index.html";
+
+            return;
+        }
+
+
+        const messType =
+            document.getElementById("messType").value;
+
+        const messName =
+            document.getElementById("messName").value.trim();
+
+        const messDate =
+            document.getElementById("messDate").value;
+
+        const messDetails =
+            document.getElementById("messDetails").value.trim();
+
+
+        // ===============================
+        // VALIDATION
+        // ===============================
+
+        if (
+            !messType ||
+            !messName ||
+            !messDate ||
+            !messDetails
+        ) {
+
+            alert("Please fill all fields.");
+
+            return;
+        }
+
+
+        // ===============================
+        // FIRESTORE DATA
+        // ===============================
+
+        const requestData = {
+
+            type: "Mess Service",
+
+            title: messType,
+
+            category: messType,
+
+            service: "Mess Service",
+
+            date: messDate,
+
+            messName: messName,
+
+            messType: messType,
+
+            messDetails: messDetails,
+
+            description:
+                "Mess: " + messName +
+                " | Type: " + messType +
+                " | Details: " + messDetails,
+
+            studentUid: firebaseUser.uid,
+
+            studentName: studentName,
+
+            studentEmail: firebaseUser.email || "",
+
+            status: "Pending",
+
+            createdAt: new Date().toISOString()
+
+        };
+
+
+        try {
+
+            // Save to Firestore
+            await addDoc(
+                collection(db, "requests"),
+                requestData
+            );
+
+
+            alert(
+                "Mess request submitted successfully!"
+            );
+
+
+            // Go to My Requests
+            window.location.href = "requests.html";
+
+
+        } catch (error) {
+
+            console.error(
+                "Mess request error:",
+                error
+            );
+
+            alert(
+                "Failed to submit request.\n\n" +
+                error.message
+            );
+
+        }
+
+    });
+
+
+// ===============================
+// LOGOUT
+// ===============================
+
+window.logoutUser = async function() {
+
+    try {
+
+        await signOut(auth);
+
+        localStorage.removeItem("currentUser");
+
+        window.location.href = "index.html";
+
+    } catch (error) {
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+        alert("Logout failed.");
+
+    }
+
+};
+
+</script>
+
+</body>
+</html>
